@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Izipay Q161 Pro — Simulación en Dispositivo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #dc1c1b;
+      --teal: #008380;
+      --teal-bg: rgba(0,131,128,0.08);
+      --white: #FFFFFF;
+      --black: #1A1A1A;
+      --gray-dark: #444;
+      --gray: #777;
+      --green: #28a745;
+      --orange: #E65100;
+      --orange-bg: #FFF3E0;
+      --err: #D32F2F;
+      --err-bg: #FFEBEE;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0c0c16;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 14px 16px 64px;
+      gap: 10px;
+    }
+
+    .title {
+      color: rgba(255,255,255,0.45);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ===== DEVICE ===== */
+    .pos-wrap { position: relative; width: 480px; height: 740px; flex-shrink: 0; }
+    .pos-img { width: 480px; height: 740px; display: block; }
+
+    /* Pantalla exacta del SVG: x=80 y=110 w=320 h=410 rx=12 */
+    .screen-area {
+      position: absolute;
+      top: 110px; left: 80px;
+      width: 320px; height: 410px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    /* ===== SCREENS ===== */
+    .scr {
+      display: none;
+      width: 320px; height: 410px;
+      flex-direction: column;
+      background: var(--white);
+      position: absolute; top: 0; left: 0;
+    }
+    .scr.active { display: flex; }
+
+    /* ===== ACCENT BAR ===== */
+    .acc { height: 4px; background: var(--red); flex-shrink: 0; width: 100%; }
+
+    /* ===== MINI HEADER (PIN) ===== */
+    .mh {
+      height: 36px; background: var(--red);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 100%;
+    }
+    .mh span { font-size: 13px; font-weight: 700; color: var(--white); letter-spacing: 0.3px; }
+
+    /* ===== BODY ===== */
+    .bd {
+      flex: 1; width: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 16px 20px; gap: 12px;
+      background: var(--white);
+      overflow: hidden;
+    }
+
+    /* ===== FOOTER ===== */
+    .ft {
+      flex-shrink: 0; width: 100%;
+      padding: 10px 20px 14px;
+      display: flex; flex-direction: column; gap: 8px;
+      background: var(--white);
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      width: 100%; padding: 14px;
+      border: none; border-radius: 10px;
+      font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; text-align: center;
+    }
+    .btn-t { background: var(--teal); color: var(--white); }
+    .btn-o { background: var(--white); color: var(--gray-dark); border: 2px solid #ddd; }
+
+    /* ===== QR ===== */
+    .qr-wrap {
+      width: 190px; height: 190px; padding: 8px;
+      background: var(--white); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qr-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
+    .qr-sm {
+      width: 150px; height: 150px; padding: 8px;
+      border: 2.5px dashed #ccc; border-radius: 12px;
+      background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qr-sm img { width: 100%; height: 100%; object-fit: contain; }
+
+    /* ===== WALLETS ===== */
+    .wl { display: flex; gap: 8px; align-items: center; }
+    .wl img { height: 28px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+    /* ===== NFC GLOW ===== */
+    .nfc { position: relative; display: flex; align-items: center; justify-content: center; }
+    .nr {
+      position: absolute; border-radius: 50%; border: 2.5px solid var(--teal); opacity: 0;
+      animation: gl 2.5s ease-out infinite;
+    }
+    .nr:nth-child(1) { width: 50px; height: 50px; animation-delay: 0s; }
+    .nr:nth-child(2) { width: 75px; height: 75px; animation-delay: 0.5s; }
+    .nr:nth-child(3) { width: 100px; height: 100px; animation-delay: 1s; }
+    @keyframes gl {
+      0% { opacity: 0.6; transform: scale(0.85); }
+      100% { opacity: 0; transform: scale(1.15); }
+    }
+
+    .nfc-xl .nr:nth-child(1) { width: 80px; height: 80px; }
+    .nfc-xl .nr:nth-child(2) { width: 120px; height: 120px; }
+    .nfc-xl .nr:nth-child(3) { width: 160px; height: 160px; }
+    .nfc-c { z-index: 1; }
+
+    .nfc-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; background: var(--teal-bg); border-radius: 10px; width: 100%;
+    }
+    .nfc-bar span { font-size: 14px; color: var(--teal); font-weight: 700; }
+
+    /* ===== SPINNER ===== */
+    .spin {
+      width: 44px; height: 44px; border: 4px solid #eee; border-top-color: var(--teal);
+      border-radius: 50%; animation: sp 0.7s linear infinite;
+    }
+    @keyframes sp { to { transform: rotate(360deg); } }
+
+    /* ===== SUCCESS ===== */
+    .ok {
+      position: absolute; inset: 0; background: var(--green);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; z-index: 10;
+    }
+    .ok-chk {
+      width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      animation: pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    @keyframes pop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    /* ===== PIN ===== */
+    .pin-a {
+      flex: 1; width: 100%;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 14px 20px; gap: 12px; background: var(--white);
+    }
+    .pb { display: flex; gap: 12px; }
+    .px {
+      width: 48px; height: 52px; border: 2.5px solid #ddd; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; background: var(--white);
+    }
+    .px.on { border-color: var(--teal); }
+    .px.on::after { content: ''; width: 14px; height: 14px; background: var(--teal); border-radius: 50%; }
+
+    .np { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; max-width: 260px; }
+    .nk {
+      height: 44px; border: 1.5px solid #e0e0e0; border-radius: 10px; background: var(--white);
+      font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; color: var(--black);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .nk:active { background: #f0f0f0; }
+    .nk-e { border: none; }
+    .nk-d { font-size: 18px; color: var(--gray); }
+
+    .pf { padding: 8px 20px 14px; background: var(--white); width: 100%; }
+
+    /* ===== ICONS ===== */
+    .ic {
+      width: 76px; height: 76px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ic-r { background: var(--err-bg); }
+    .ic-o { background: var(--orange-bg); }
+
+    /* ===== SCENARIO LABEL ===== */
+    .sc-info { display: none; flex-direction: column; align-items: center; gap: 4px; }
+    .sc-info.active { display: flex; }
+    .sc-t { color: rgba(255,255,255,0.5); font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; }
+    .sc-d { color: rgba(255,255,255,0.25); font-size: 9px; text-align: center; max-width: 400px; line-height: 1.5; }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(12,12,22,0.96); backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 7px 8px; display: flex; align-items: center; justify-content: center;
+      gap: 3px; z-index: 200; flex-wrap: wrap;
+    }
+    .nb {
+      padding: 5px 7px; border: none; border-radius: 4px;
+      font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 600;
+      cursor: pointer; background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); white-space: nowrap;
+    }
+    .nb.on { background: var(--red); color: var(--white); }
+    .nb:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+    .nb.on:hover { background: var(--red); color: var(--white); }
+  </style>
+</head>
+<body>
+
+<div class="title">Simulación en Dispositivo — Aisino Q161 Pro</div>
+
+<div class="pos-wrap">
+  <img src="Recursos/POSCarcasa.svg" class="pos-img" alt="Q161 Pro">
+
+  <div class="screen-area">
+
+    <!-- E1: QR ESTÁTICO IDLE -->
+    <div class="scr active" data-s="0">
+      <div class="acc"></div>
+      <div class="bd" style="justify-content:flex-start; padding-top:16px; gap:10px;">
+        <div style="font-size:18px; font-weight:800; color:var(--black); text-align:center; line-height:1.35;">
+          Paga con Yape, Plin<br>o Tarjeta
+        </div>
+        <div class="qr-wrap">
+          <img src="Recursos/QR.png" alt="QR Code">
+        </div>
+        <div style="font-size:13px; color:var(--gray); font-weight:500;">Bodega Don Lucho</div>
+        <div class="wl">
+          <img src="Recursos/Frame.png" alt="Yape">
+          <img src="Recursos/PLIN.png" alt="Plin">
+        </div>
+      </div>
+    </div>
+
+    <!-- E2: QR DINÁMICO < 2500 -->
+    <div class="scr" data-s="1">
+      <div class="acc"></div>
+      <div class="bd" style="justify-content:flex-start; padding-top:14px; gap:8px;">
+        <div style="font-size:12px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
+        <div style="font-size:30px; font-weight:900; color:var(--teal); letter-spacing:-0.5px;">S/ 150.00</div>
+        <div class="wl">
+          <img src="Recursos/Frame.png" alt="Yape">
+          <img src="Recursos/PLIN.png" alt="Plin">
+        </div>
+        <div class="qr-sm">
+          <img src="Recursos/QR.png" alt="QR Code">
+        </div>
+        <div class="nfc-bar">
+          <div class="nfc" style="width:42px; height:42px; flex-shrink:0;">
+            <div class="nr"></div><div class="nr"></div><div class="nr"></div>
+            <div class="nfc-c">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="12" cy="12" r="2.5" fill="var(--teal)"/><path d="M8 16a6 6 0 010-8"/><path d="M16 8a6 6 0 010 8"/>
+              </svg>
+            </div>
+          </div>
+          <span>O acerque su tarjeta</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- E3: SOLO TARJETA > 2500 -->
+    <div class="scr" data-s="2">
+      <div class="acc"></div>
+      <div class="bd" style="gap:12px;">
+        <div style="font-size:12px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
+        <div style="font-size:32px; font-weight:900; color:var(--black); letter-spacing:-0.5px;">S/ 3,000.00</div>
+        <div style="width:40px; height:4px; background:var(--red); border-radius:2px;"></div>
+        <div class="nfc nfc-xl" style="width:170px; height:170px;">
+          <div class="nr"></div><div class="nr"></div><div class="nr"></div>
+          <div class="nfc-c">
+            <img src="Recursos/Mask group.png" style="width:72px; height:auto;" alt="NFC">
+          </div>
+        </div>
+        <div style="font-size:16px; font-weight:700; color:var(--black); text-align:center; line-height:1.45;">
+          Por favor, acerque o<br>inserte su tarjeta
+        </div>
+      </div>
+    </div>
+
+    <!-- E4: PROCESANDO PASO 1 -->
+    <div class="scr" data-s="3">
+      <div class="bd">
+        <div style="display:flex; align-items:baseline;">
+          <span style="font-weight:900; font-size:36px; color:#bbb;">izi</span><span style="font-weight:900; font-size:36px; color:#ddd;">pay</span>
+        </div>
+        <div style="font-size:16px; color:var(--gray-dark); font-weight:600; margin-top:10px;">Por favor, espera un momento</div>
+      </div>
+    </div>
+
+    <!-- E5: PROCESANDO PASO 2 -->
+    <div class="scr" data-s="4">
+      <div class="bd" style="gap:24px;">
+        <div class="spin"></div>
+        <div style="font-size:15px; color:var(--gray-dark); font-weight:600; text-align:center; line-height:1.6; max-width:260px;">
+          Estamos procesando su transacción.<br>Por favor, espera un momento
+        </div>
+      </div>
+    </div>
+
+    <!-- E6: SOLICITUD DE PIN -->
+    <div class="scr" data-s="5">
+      <div class="mh"><span>Código de verificación</span></div>
+      <div class="pin-a">
+        <div style="font-size:14px; color:var(--gray); font-weight:600;">Ingrese su PIN</div>
+        <div class="pb">
+          <div class="px on"></div><div class="px on"></div><div class="px"></div><div class="px"></div>
+        </div>
+        <div class="np">
+          <button class="nk">1</button><button class="nk">2</button><button class="nk">3</button>
+          <button class="nk">4</button><button class="nk">5</button><button class="nk">6</button>
+          <button class="nk">7</button><button class="nk">8</button><button class="nk">9</button>
+          <button class="nk nk-e"></button><button class="nk">0</button><button class="nk nk-d">⌫</button>
+        </div>
+      </div>
+      <div class="pf"><button class="btn btn-t">Validar</button></div>
+    </div>
+
+    <!-- E7: ÉXITO TOTAL -->
+    <div class="scr" data-s="6">
+      <div class="ok">
+        <div class="ok-chk">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="13,24 21,32 35,17"/>
+          </svg>
+        </div>
+        <div style="font-size:30px; font-weight:900; color:white;">S/ 150.00</div>
+        <div style="font-size:18px; font-weight:700; color:rgba(255,255,255,0.92);">RECIBIDO</div>
+        <div style="display:flex; align-items:center; gap:6px; margin-top:16px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+          <span style="font-size:12px; color:rgba(255,255,255,0.45); font-weight:500;">Cobro exitoso</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- E8: PIN INCORRECTO -->
+    <div class="scr" data-s="7">
+      <div class="acc"></div>
+      <div class="bd" style="gap:14px;">
+        <div class="ic ic-r">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="var(--err)" stroke-width="3.5" stroke-linecap="round">
+            <line x1="11" y1="11" x2="27" y2="27"/><line x1="27" y1="11" x2="11" y2="27"/>
+          </svg>
+        </div>
+        <div style="font-size:22px; font-weight:800; color:var(--err);">Clave incorrecta</div>
+        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Por favor, intente nuevamente.</div>
+      </div>
+      <div class="ft"><button class="btn btn-t">Reintentar</button></div>
+    </div>
+
+    <!-- E9: TARJETA NO LEÍDA -->
+    <div class="scr" data-s="8">
+      <div class="acc"></div>
+      <div class="bd" style="gap:14px;">
+        <div style="position:relative;">
+          <img src="Recursos/Mask group.png" style="width:90px; height:auto; opacity:0.35;" alt="Tarjeta">
+          <div style="position:absolute; bottom:-6px; right:-6px; width:36px; height:36px; background:var(--orange-bg); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 20h20L12 2z" fill="none"/><line x1="12" y1="9" x2="12" y2="14"/><circle cx="12" cy="17" r="1" fill="var(--orange)" stroke="none"/>
+            </svg>
+          </div>
+        </div>
+        <div style="font-size:22px; font-weight:800; color:var(--orange);">Error de lectura</div>
+        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Limpie el chip o intente<br>con otra tarjeta.</div>
+      </div>
+      <div class="ft"><button class="btn btn-t">Reintentar</button></div>
+    </div>
+
+    <!-- E10: ERROR CONECTIVIDAD -->
+    <div class="scr" data-s="9">
+      <div class="acc"></div>
+      <div class="bd" style="gap:14px;">
+        <div class="ic ic-o">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="var(--orange)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 6L4 32h30L19 6z" fill="none"/><line x1="19" y1="15" x2="19" y2="23"/><circle cx="19" cy="27" r="1.5" fill="var(--orange)" stroke="none"/>
+          </svg>
+        </div>
+        <div style="font-size:22px; font-weight:800; color:var(--orange);">Error de conexión</div>
+        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">No se realizó el cobro.</div>
+        <div style="font-size:13px; color:var(--gray); text-align:center;">Verifique su señal y reintente.</div>
+      </div>
+      <div class="ft"><button class="btn btn-t">Reintentar</button></div>
+    </div>
+
+    <!-- E11: RECHAZO FIRMA -->
+    <div class="scr" data-s="10">
+      <div class="acc"></div>
+      <div class="bd" style="gap:14px;">
+        <div class="ic ic-r">
+          <svg width="40" height="40" viewBox="0 0 42 42" fill="none" stroke-linecap="round">
+            <circle cx="21" cy="21" r="17" stroke="var(--err)" stroke-width="3" fill="none"/>
+            <line x1="10" y1="10" x2="32" y2="32" stroke="var(--err)" stroke-width="3"/>
+          </svg>
+        </div>
+        <div style="font-size:20px; font-weight:800; color:var(--black); text-align:center; line-height:1.3;">Transacción<br>no permitida</div>
+        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Use una tarjeta con PIN<br>o Contactless.</div>
+      </div>
+      <div class="ft" style="gap:8px;">
+        <button class="btn btn-t">Reintentar</button>
+        <button class="btn btn-o">Cancelar</button>
+      </div>
+    </div>
+
+  </div><!-- /screen-area -->
+</div><!-- /pos-wrap -->
+
+<!-- ===== SCENARIO LABELS ===== -->
+<div id="labels">
+  <div class="sc-info active" data-l="0"><div class="sc-t">1 — QR Estático (Idle)</div><div class="sc-d">POS encendido esperando venta. QR estático para Yape, Plin o Tarjeta.</div></div>
+  <div class="sc-info" data-l="1"><div class="sc-t">2 — QR Dinámico (&lt; S/ 2,500)</div><div class="sc-d">Monto S/ 150.00 + QR dinámico + NFC glow.</div></div>
+  <div class="sc-info" data-l="2"><div class="sc-t">3 — Solo Tarjeta (&gt; S/ 2,500)</div><div class="sc-d">Sin QR. Solo NFC/Chip. Animación grande.</div></div>
+  <div class="sc-info" data-l="3"><div class="sc-t">4 — Procesando (Paso 1)</div><div class="sc-d">Logo Izipay gris. Pantalla limpia.</div></div>
+  <div class="sc-info" data-l="4"><div class="sc-t">5 — Procesando (Paso 2)</div><div class="sc-d">Spinner teal + mensaje de validación.</div></div>
+  <div class="sc-info" data-l="5"><div class="sc-t">6 — Solicitud de PIN</div><div class="sc-d">Monto > S/ 80. Teclado numérico + Validar.</div></div>
+  <div class="sc-info" data-l="6"><div class="sc-t">7 — Éxito Total</div><div class="sc-d">Verde full. Check + RECIBIDO + audio.</div></div>
+  <div class="sc-info" data-l="7"><div class="sc-t">8 — PIN Incorrecto</div><div class="sc-d">X roja + reintentar.</div></div>
+  <div class="sc-info" data-l="8"><div class="sc-t">9 — Tarjeta No Leída</div><div class="sc-d">Error de chip. Limpie o use otra tarjeta.</div></div>
+  <div class="sc-info" data-l="9"><div class="sc-t">10 — Error de Conectividad</div><div class="sc-d">Falla de red. No se realizó el cobro.</div></div>
+  <div class="sc-info" data-l="10"><div class="sc-t">11 — Rechazo por Firma</div><div class="sc-d">Terminal no acepta firmas.</div></div>
+</div>
+
+<nav class="nav" id="nav"></nav>
+
+<script>
+  const L = [
+    '1: QR Idle','2: QR < 2500','3: > 2500',
+    '4: Proc. 1','5: Proc. 2','6: PIN',
+    '7: Éxito','8: PIN Err','9: Lectura',
+    '10: Red','11: Firma'
+  ];
+
+  const screens = document.querySelectorAll('.scr');
+  const labels = document.querySelectorAll('.sc-info');
+  const nav = document.getElementById('nav');
+  let cur = 0;
+
+  L.forEach((l, i) => {
+    const b = document.createElement('button');
+    b.className = 'nb' + (i === 0 ? ' on' : '');
+    b.textContent = l;
+    b.onclick = () => go(i);
+    nav.appendChild(b);
+  });
+
+  function go(i) {
+    cur = i;
+    screens.forEach((s, j) => s.classList.toggle('active', j === i));
+    labels.forEach((s, j) => s.classList.toggle('active', j === i));
+    nav.querySelectorAll('.nb').forEach((b, j) => b.classList.toggle('on', j === i));
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); go(Math.min(cur + 1, L.length - 1)); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(Math.max(cur - 1, 0)); }
+  });
+</script>
+
+</body>
+</html>

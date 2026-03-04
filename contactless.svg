@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 360" width="512" height="360">
+
+  <!-- Ovalo contenedor -->
+  <ellipse cx="230" cy="180" rx="200" ry="140" fill="none" stroke="white" stroke-width="8"/>
+
+  <!-- Ondas NFC - rotadas ~45 grados, abiertas hacia la derecha-arriba -->
+  <g transform="translate(185, 185) rotate(-45)" fill="none" stroke="white" stroke-width="8" stroke-linecap="round">
+    <path d="M 0,-18 A 18,18 0 0 1 0,18"/>
+    <path d="M 0,-38 A 38,38 0 0 1 0,38"/>
+    <path d="M 0,-58 A 58,58 0 0 1 0,58"/>
+    <path d="M 0,-78 A 78,78 0 0 1 0,78"/>
+  </g>
+
+  <!-- Mano con tarjeta -->
+  <g fill="white" stroke="white" stroke-width="1">
+    <!-- Tarjeta (rect�ngulo inclinado) -->
+    <rect x="310" y="100" width="52" height="38" rx="4" transform="rotate(8, 336, 119)"/>
+
+    <!-- Mano -->
+    <path d="
+      M 322,138
+      C 318,142 316,148 316,152
+      L 316,170
+      C 316,172 314,174 312,174
+      L 310,174
+      C 308,174 306,176 306,178
+      L 306,210
+      C 306,218 310,224 318,228
+      L 340,228
+      C 350,228 356,222 356,212
+      L 356,152
+      C 356,146 354,140 350,136
+      L 348,134
+      C 348,134 344,138 340,138
+      Z
+    " fill="white" stroke="none"/>
+
+    <!-- Dedos -->
+    <path d="
+      M 326,138
+      L 326,158
+      M 334,136
+      L 334,162
+      M 342,136
+      L 342,158
+      M 350,138
+      L 350,154
+    " fill="none" stroke="white" stroke-width="3" stroke-linecap="round" opacity="0"/>
+
+    <!-- Mu�eca / brazo -->
+    <rect x="312" y="226" width="38" height="30" rx="2" fill="white" stroke="none"/>
+
+    <!-- Pulgar -->
+    <path d="
+      M 316,152
+      C 310,156 306,162 306,170
+      L 306,178
+    " fill="none" stroke="white" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- Separaci�n de dedos (l�neas oscuras sobre la mano blanca) -->
+    <line x1="328" y1="138" x2="328" y2="168" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+    <line x1="338" y1="137" x2="338" y2="170" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+    <line x1="348" y1="138" x2="348" y2="164" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+</svg>
