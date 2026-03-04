@@ -637,17 +637,19 @@
       <!-- E1: QR ESTÁTICO IDLE -->
       <div class="scr active" data-s="0">
         <div class="acc"></div>
-        <div class="bd" style="justify-content:flex-start; padding-top:16px; gap:10px;">
-          <div style="font-size:18px; font-weight:800; color:var(--black); text-align:center; line-height:1.35;">
+        <div class="bd" style="justify-content:space-evenly; padding:12px 20px;">
+          <div style="font-size:20px; font-weight:800; color:var(--black); text-align:center; line-height:1.35;">
             Paga con Yape, Plin<br>o Tarjeta
           </div>
-          <div class="qr-wrap">
+          <div class="qr-wrap" style="width:230px; height:230px;">
             <img src="Recursos/QR.png" alt="QR Code">
           </div>
-          <div style="font-size:13px; color:var(--gray); font-weight:500;">Bodega Don Lucho</div>
-          <div class="wl">
-            <img src="Recursos/Frame.png" alt="Yape">
-            <img src="Recursos/PLIN.png" alt="Plin">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <div style="font-size:15px; color:var(--gray); font-weight:600;">Bodega Don Lucho</div>
+            <div class="wl">
+              <img src="Recursos/yape.svg" alt="Yape" style="height:32px;">
+              <img src="Recursos/PLIN.svg" alt="Plin" style="height:32px;">
+            </div>
           </div>
         </div>
       </div>
@@ -655,14 +657,16 @@
       <!-- E2: QR DINÁMICO < 2500 -->
       <div class="scr" data-s="1">
         <div class="acc"></div>
-        <div class="bd" style="justify-content:flex-start; padding-top:14px; gap:8px;">
-          <div style="font-size:12px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
-          <div id="dynAmount" style="font-size:30px; font-weight:900; color:var(--teal); letter-spacing:-0.5px;">S/ 0.00</div>
-          <div class="wl">
-            <img src="Recursos/Frame.png" alt="Yape">
-            <img src="Recursos/PLIN.png" alt="Plin">
+        <div class="bd" style="justify-content:space-evenly; padding:10px 20px;">
+          <div style="text-align:center;">
+            <div style="font-size:11px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
+            <div id="dynAmount" style="font-size:32px; font-weight:900; color:var(--teal); letter-spacing:-0.5px; margin-top:2px;">S/ 0.00</div>
           </div>
-          <div class="qr-sm">
+          <div class="wl">
+            <img src="Recursos/yape.svg" alt="Yape" style="height:30px;">
+            <img src="Recursos/PLIN.svg" alt="Plin" style="height:30px;">
+          </div>
+          <div class="qr-sm" style="width:170px; height:170px;">
             <img src="Recursos/QR.png" alt="QR Code">
           </div>
           <div class="nfc-bar">
