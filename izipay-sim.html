@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Izipay Q161 Pro — Simulación en Dispositivo</title>
+  <title>Izipay Q161 Pro — Simulación Interactiva</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -43,11 +43,210 @@
       text-transform: uppercase;
     }
 
+    /* ===== MAIN LAYOUT ===== */
+    .sim-layout {
+      display: flex;
+      align-items: flex-end;
+      gap: 24px;
+    }
+
+    /* ===== MERCHANT BACK (POS PHYSICAL) ===== */
+    .merchant {
+      width: 230px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .merchant-label {
+      color: rgba(255,255,255,0.3);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .pos-back {
+      width: 210px;
+      background: linear-gradient(170deg, #f0f0f0 0%, #d8d8d8 50%, #c8c8c8 100%);
+      border-radius: 24px 24px 20px 20px;
+      padding: 14px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      box-shadow:
+        0 8px 30px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.6),
+        inset 0 -2px 4px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    /* Speaker grille */
+    .speaker {
+      width: 80px;
+      height: 28px;
+      background: #bbb;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 0 10px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .speaker-dot {
+      width: 3px;
+      height: 3px;
+      background: #999;
+      border-radius: 50%;
+    }
+
+    /* LCD screen */
+    .merchant-lcd {
+      width: 100%;
+      background: #1a2a1a;
+      border-radius: 6px;
+      padding: 8px 10px;
+      min-height: 44px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border: 2px solid #aaa;
+    }
+
+    .lcd-line {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .lcd-green { color: #00ff88; text-shadow: 0 0 6px rgba(0,255,136,0.4); }
+    .lcd-red { color: #ff4444; text-shadow: 0 0 6px rgba(255,68,68,0.4); }
+    .lcd-orange { color: #ffaa00; text-shadow: 0 0 6px rgba(255,170,0,0.4); }
+
+    /* Amount display */
+    .merchant-display {
+      width: 100%;
+      background: #222;
+      border-radius: 6px;
+      padding: 8px 10px;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      border: 2px solid #aaa;
+    }
+
+    .merchant-amount {
+      font-family: 'Courier New', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: #00ff88;
+      text-shadow: 0 0 6px rgba(0,255,136,0.3);
+    }
+
+    .merchant-amount .currency {
+      font-size: 12px;
+      color: #00cc66;
+      margin-right: 4px;
+    }
+
+    /* Physical keypad */
+    .merchant-numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
+    }
+
+    .mk {
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #e8e8e8 0%, #d0d0d0 100%);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5);
+      transition: all 0.1s;
+    }
+
+    .mk:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+    .mk:hover { background: linear-gradient(180deg, #f0f0f0 0%, #ddd 100%); }
+
+    .mk-dot { font-size: 20px; }
+
+    /* Color action keys */
+    .merchant-actions-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      width: 100%;
+    }
+
+    .mk-cancel {
+      background: linear-gradient(180deg, #ff5252 0%, #d32f2f 100%);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .mk-cancel:hover { background: linear-gradient(180deg, #ff6b6b 0%, #e53935 100%); }
+
+    .mk-clear-key {
+      background: linear-gradient(180deg, #ffca28 0%, #f9a825 100%);
+      color: #333;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .mk-clear-key:hover { background: linear-gradient(180deg, #ffd54f 0%, #ffb300 100%); }
+
+    .mk-confirm {
+      background: linear-gradient(180deg, #66bb6a 0%, #388e3c 100%);
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .mk-confirm:hover { background: linear-gradient(180deg, #81c784 0%, #43a047 100%); }
+    .mk-confirm:disabled { background: linear-gradient(180deg, #999 0%, #777 100%); color: #bbb; cursor: not-allowed; }
+
+    /* Status indicator */
+    .merchant-status {
+      text-align: center;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px;
+      border-radius: 6px;
+      margin-top: 6px;
+    }
+
+    .ms-idle { color: rgba(255,255,255,0.2); background: transparent; }
+    .ms-waiting { color: var(--teal); background: rgba(0,131,128,0.1); }
+    .ms-processing { color: #ffaa00; background: rgba(255,170,0,0.1); }
+    .ms-success { color: var(--green); background: rgba(40,167,69,0.1); }
+    .ms-error { color: var(--err); background: rgba(211,47,47,0.1); }
+
     /* ===== DEVICE ===== */
     .pos-wrap { position: relative; width: 480px; height: 740px; flex-shrink: 0; }
     .pos-img { width: 480px; height: 740px; display: block; }
 
-    /* Pantalla exacta del SVG: x=80 y=110 w=320 h=410 rx=12 */
     .screen-area {
       position: absolute;
       top: 110px; left: 80px;
@@ -67,10 +266,8 @@
     }
     .scr.active { display: flex; }
 
-    /* ===== ACCENT BAR ===== */
     .acc { height: 4px; background: var(--red); flex-shrink: 0; width: 100%; }
 
-    /* ===== MINI HEADER (PIN) ===== */
     .mh {
       height: 36px; background: var(--red);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -78,7 +275,6 @@
     }
     .mh span { font-size: 13px; font-weight: 700; color: var(--white); letter-spacing: 0.3px; }
 
-    /* ===== BODY ===== */
     .bd {
       flex: 1; width: 100%;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -87,7 +283,6 @@
       overflow: hidden;
     }
 
-    /* ===== FOOTER ===== */
     .ft {
       flex-shrink: 0; width: 100%;
       padding: 10px 20px 14px;
@@ -95,7 +290,6 @@
       background: var(--white);
     }
 
-    /* ===== BUTTONS ===== */
     .btn {
       width: 100%; padding: 14px;
       border: none; border-radius: 10px;
@@ -105,7 +299,6 @@
     .btn-t { background: var(--teal); color: var(--white); }
     .btn-o { background: var(--white); color: var(--gray-dark); border: 2px solid #ddd; }
 
-    /* ===== QR ===== */
     .qr-wrap {
       width: 190px; height: 190px; padding: 8px;
       background: var(--white); border-radius: 12px;
@@ -121,11 +314,9 @@
     }
     .qr-sm img { width: 100%; height: 100%; object-fit: contain; }
 
-    /* ===== WALLETS ===== */
     .wl { display: flex; gap: 8px; align-items: center; }
     .wl img { height: 28px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
 
-    /* ===== NFC GLOW ===== */
     .nfc { position: relative; display: flex; align-items: center; justify-content: center; }
     .nr {
       position: absolute; border-radius: 50%; border: 2.5px solid var(--teal); opacity: 0;
@@ -150,14 +341,12 @@
     }
     .nfc-bar span { font-size: 14px; color: var(--teal); font-weight: 700; }
 
-    /* ===== SPINNER ===== */
     .spin {
       width: 44px; height: 44px; border: 4px solid #eee; border-top-color: var(--teal);
       border-radius: 50%; animation: sp 0.7s linear infinite;
     }
     @keyframes sp { to { transform: rotate(360deg); } }
 
-    /* ===== SUCCESS ===== */
     .ok {
       position: absolute; inset: 0; background: var(--green);
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; z-index: 10;
@@ -169,7 +358,6 @@
     }
     @keyframes pop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-    /* ===== PIN ===== */
     .pin-a {
       flex: 1; width: 100%;
       display: flex; flex-direction: column; align-items: center;
@@ -179,6 +367,7 @@
     .px {
       width: 48px; height: 52px; border: 2.5px solid #ddd; border-radius: 10px;
       display: flex; align-items: center; justify-content: center; background: var(--white);
+      transition: border-color 0.2s;
     }
     .px.on { border-color: var(--teal); }
     .px.on::after { content: ''; width: 14px; height: 14px; background: var(--teal); border-radius: 50%; }
@@ -195,7 +384,6 @@
 
     .pf { padding: 8px 20px 14px; background: var(--white); width: 100%; }
 
-    /* ===== ICONS ===== */
     .ic {
       width: 76px; height: 76px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -228,48 +416,138 @@
 
     /* ===== VIEW TOGGLE ===== */
     .view-toggle {
-      position: fixed;
-      top: 14px;
-      right: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 300;
+      position: fixed; top: 14px; right: 14px;
+      display: flex; align-items: center; gap: 8px; z-index: 300;
     }
 
     .vt-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      display: flex; align-items: center; gap: 6px;
       padding: 8px 14px;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
       background: rgba(255,255,255,0.06);
       color: rgba(255,255,255,0.5);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600;
+      cursor: pointer; text-decoration: none; transition: all 0.2s ease;
+    }
+    .vt-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.2); }
+    .vt-active { background: var(--red); color: var(--white); border-color: var(--red); pointer-events: none; }
+    .vt-active:hover { background: var(--red); color: var(--white); }
+
+    /* ===== MODE TOGGLE ===== */
+    .mode-toggle {
+      display: flex; gap: 4px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px; padding: 3px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .mt-btn {
+      padding: 6px 12px; border: none; border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.5px; text-transform: uppercase;
+      background: transparent; color: rgba(255,255,255,0.35);
+      transition: all 0.2s;
+    }
+    .mt-btn.on { background: var(--red); color: var(--white); }
+    .mt-btn:hover:not(.on) { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); }
+
+    /* ===== SCENARIO PANEL (RIGHT SIDE) ===== */
+    .scenario-panel {
+      width: 200px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: opacity 0.3s;
+    }
+
+    .scenario-panel.disabled { opacity: 0.3; pointer-events: none; }
+    .scenario-panel.disabled .sp-btn { cursor: not-allowed; }
+
+    .sp-title {
+      color: rgba(255,255,255,0.3);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .sp-subtitle {
+      color: rgba(255,255,255,0.15);
+      font-size: 9px;
+      text-align: center;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .sp-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sp-group-label {
+      color: rgba(255,255,255,0.2);
+      font-size: 7px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0 4px;
+      margin-top: 4px;
+    }
+
+    .sp-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .sp-btn:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateX(2px);
+    }
+
+    .sp-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+
+    .sp-icon-green { background: rgba(40,167,69,0.15); }
+    .sp-icon-red { background: rgba(211,47,47,0.15); }
+    .sp-icon-orange { background: rgba(230,81,0,0.15); }
+    .sp-icon-teal { background: rgba(0,131,128,0.15); }
+
+    .sp-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .sp-name {
+      color: rgba(255,255,255,0.7);
       font-size: 11px;
       font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s ease;
     }
 
-    .vt-btn:hover {
-      background: rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.8);
-      border-color: rgba(255,255,255,0.2);
-    }
-
-    .vt-active {
-      background: var(--red);
-      color: var(--white);
-      border-color: var(--red);
-      pointer-events: none;
-    }
-
-    .vt-active:hover {
-      background: var(--red);
-      color: var(--white);
+    .sp-desc {
+      color: rgba(255,255,255,0.25);
+      font-size: 8px;
+      line-height: 1.3;
     }
   </style>
 </head>
@@ -286,212 +564,365 @@
   </a>
 </div>
 
-<div class="title">Simulación en Dispositivo — Aisino Q161 Pro</div>
+<div class="title">Simulación Interactiva — Aisino Q161 Pro</div>
 
-<div class="pos-wrap">
-  <img src="Recursos/POSCarcasa.svg" class="pos-img" alt="Q161 Pro">
+<div style="display:flex; justify-content:center; margin-bottom:4px;">
+  <div class="mode-toggle">
+    <button class="mt-btn on" id="modeInteractive" onclick="setMode('interactive')">Interactivo</button>
+    <button class="mt-btn" id="modeManual" onclick="setMode('manual')">Manual</button>
+  </div>
+</div>
 
-  <div class="screen-area">
+<div class="sim-layout">
 
-    <!-- E1: QR ESTÁTICO IDLE -->
-    <div class="scr active" data-s="0">
-      <div class="acc"></div>
-      <div class="bd" style="justify-content:flex-start; padding-top:16px; gap:10px;">
-        <div style="font-size:18px; font-weight:800; color:var(--black); text-align:center; line-height:1.35;">
-          Paga con Yape, Plin<br>o Tarjeta
+  <!-- ===== MERCHANT BACK (POS PHYSICAL) ===== -->
+  <div class="merchant" id="merchantPanel">
+    <div class="merchant-label">Pantalla Vendedor (Trasera)</div>
+
+    <div class="pos-back">
+      <!-- Speaker grille -->
+      <div class="speaker">
+        <div class="speaker-dot"></div><div class="speaker-dot"></div><div class="speaker-dot"></div>
+        <div class="speaker-dot"></div><div class="speaker-dot"></div><div class="speaker-dot"></div>
+        <div class="speaker-dot"></div><div class="speaker-dot"></div><div class="speaker-dot"></div>
+        <div class="speaker-dot"></div><div class="speaker-dot"></div><div class="speaker-dot"></div>
+      </div>
+
+      <!-- LCD Screen -->
+      <div class="merchant-lcd" id="merchantLcd">
+        <div class="lcd-line lcd-green" id="lcdLine1">IZIPAY</div>
+        <div class="lcd-line lcd-green" id="lcdLine2">LISTO</div>
+      </div>
+
+      <!-- Amount display -->
+      <div class="merchant-display">
+        <div class="merchant-amount">
+          <span class="currency">S/</span><span id="amountDisplay">0.00</span>
         </div>
-        <div class="qr-wrap">
-          <img src="Recursos/QR.png" alt="QR Code">
-        </div>
-        <div style="font-size:13px; color:var(--gray); font-weight:500;">Bodega Don Lucho</div>
-        <div class="wl">
-          <img src="Recursos/Frame.png" alt="Yape">
-          <img src="Recursos/PLIN.png" alt="Plin">
-        </div>
+      </div>
+
+      <!-- Number keys -->
+      <div class="merchant-numpad" id="merchantNumpad">
+        <button class="mk" onclick="numpad('1')">1</button>
+        <button class="mk" onclick="numpad('2')">2</button>
+        <button class="mk" onclick="numpad('3')">3</button>
+        <button class="mk" onclick="numpad('4')">4</button>
+        <button class="mk" onclick="numpad('5')">5</button>
+        <button class="mk" onclick="numpad('6')">6</button>
+        <button class="mk" onclick="numpad('7')">7</button>
+        <button class="mk" onclick="numpad('8')">8</button>
+        <button class="mk" onclick="numpad('9')">9</button>
+        <button class="mk mk-dot" onclick="numpad('.')">.</button>
+        <button class="mk" onclick="numpad('0')">0</button>
+        <button class="mk" style="font-size:14px;" onclick="numpad('del')">⌫</button>
+      </div>
+
+      <!-- Action keys (Cancel / Clear / Confirm) -->
+      <div class="merchant-actions-row">
+        <button class="mk mk-cancel" onclick="resetAll()">✕</button>
+        <button class="mk mk-clear-key" onclick="numpad('C')">C</button>
+        <button class="mk mk-confirm" id="btnCobrar" onclick="cobrar()" disabled>✓</button>
       </div>
     </div>
 
-    <!-- E2: QR DINÁMICO < 2500 -->
-    <div class="scr" data-s="1">
-      <div class="acc"></div>
-      <div class="bd" style="justify-content:flex-start; padding-top:14px; gap:8px;">
-        <div style="font-size:12px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
-        <div style="font-size:30px; font-weight:900; color:var(--teal); letter-spacing:-0.5px;">S/ 150.00</div>
-        <div class="wl">
-          <img src="Recursos/Frame.png" alt="Yape">
-          <img src="Recursos/PLIN.png" alt="Plin">
+    <div class="merchant-status ms-idle" id="merchantStatus">Esperando monto</div>
+  </div>
+
+  <!-- ===== POS FRONT SCREEN ===== -->
+  <div class="pos-wrap">
+    <img src="Recursos/POSCarcasa.svg" class="pos-img" alt="Q161 Pro">
+
+    <div class="screen-area">
+
+      <!-- E1: QR ESTÁTICO IDLE -->
+      <div class="scr active" data-s="0">
+        <div class="acc"></div>
+        <div class="bd" style="justify-content:flex-start; padding-top:16px; gap:10px;">
+          <div style="font-size:18px; font-weight:800; color:var(--black); text-align:center; line-height:1.35;">
+            Paga con Yape, Plin<br>o Tarjeta
+          </div>
+          <div class="qr-wrap">
+            <img src="Recursos/QR.png" alt="QR Code">
+          </div>
+          <div style="font-size:13px; color:var(--gray); font-weight:500;">Bodega Don Lucho</div>
+          <div class="wl">
+            <img src="Recursos/Frame.png" alt="Yape">
+            <img src="Recursos/PLIN.png" alt="Plin">
+          </div>
         </div>
-        <div class="qr-sm">
-          <img src="Recursos/QR.png" alt="QR Code">
+      </div>
+
+      <!-- E2: QR DINÁMICO < 2500 -->
+      <div class="scr" data-s="1">
+        <div class="acc"></div>
+        <div class="bd" style="justify-content:flex-start; padding-top:14px; gap:8px;">
+          <div style="font-size:12px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
+          <div id="dynAmount" style="font-size:30px; font-weight:900; color:var(--teal); letter-spacing:-0.5px;">S/ 0.00</div>
+          <div class="wl">
+            <img src="Recursos/Frame.png" alt="Yape">
+            <img src="Recursos/PLIN.png" alt="Plin">
+          </div>
+          <div class="qr-sm">
+            <img src="Recursos/QR.png" alt="QR Code">
+          </div>
+          <div class="nfc-bar">
+            <div class="nfc" style="width:42px; height:42px; flex-shrink:0;">
+              <div class="nr"></div><div class="nr"></div><div class="nr"></div>
+              <div class="nfc-c">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="2.5" fill="var(--teal)"/><path d="M8 16a6 6 0 010-8"/><path d="M16 8a6 6 0 010 8"/>
+                </svg>
+              </div>
+            </div>
+            <span>O acerque su tarjeta</span>
+          </div>
         </div>
-        <div class="nfc-bar">
-          <div class="nfc" style="width:42px; height:42px; flex-shrink:0;">
+      </div>
+
+      <!-- E3: SOLO TARJETA > 2500 -->
+      <div class="scr" data-s="2">
+        <div class="acc"></div>
+        <div class="bd" style="gap:12px;">
+          <div style="font-size:12px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
+          <div id="cardAmount" style="font-size:32px; font-weight:900; color:var(--black); letter-spacing:-0.5px;">S/ 0.00</div>
+          <div style="width:40px; height:4px; background:var(--red); border-radius:2px;"></div>
+          <div class="nfc nfc-xl" style="width:170px; height:170px;">
             <div class="nr"></div><div class="nr"></div><div class="nr"></div>
             <div class="nfc-c">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linecap="round">
-                <circle cx="12" cy="12" r="2.5" fill="var(--teal)"/><path d="M8 16a6 6 0 010-8"/><path d="M16 8a6 6 0 010 8"/>
+              <img src="Recursos/Mask group.png" style="width:72px; height:auto;" alt="NFC">
+            </div>
+          </div>
+          <div style="font-size:16px; font-weight:700; color:var(--black); text-align:center; line-height:1.45;">
+            Por favor, acerque o<br>inserte su tarjeta
+          </div>
+        </div>
+      </div>
+
+      <!-- E4: PROCESANDO PASO 1 -->
+      <div class="scr" data-s="3">
+        <div class="bd">
+          <div style="display:flex; align-items:baseline;">
+            <span style="font-weight:900; font-size:36px; color:#bbb;">izi</span><span style="font-weight:900; font-size:36px; color:#ddd;">pay</span>
+          </div>
+          <div style="font-size:16px; color:var(--gray-dark); font-weight:600; margin-top:10px;">Por favor, espera un momento</div>
+        </div>
+      </div>
+
+      <!-- E5: PROCESANDO PASO 2 -->
+      <div class="scr" data-s="4">
+        <div class="bd" style="gap:24px;">
+          <div class="spin"></div>
+          <div style="font-size:15px; color:var(--gray-dark); font-weight:600; text-align:center; line-height:1.6; max-width:260px;">
+            Estamos procesando su transacción.<br>Por favor, espera un momento
+          </div>
+        </div>
+      </div>
+
+      <!-- E6: SOLICITUD DE PIN -->
+      <div class="scr" data-s="5">
+        <div class="mh"><span>Código de verificación</span></div>
+        <div class="pin-a">
+          <div style="font-size:14px; color:var(--gray); font-weight:600;">Ingrese su PIN</div>
+          <div class="pb" id="pinBoxes">
+            <div class="px"></div><div class="px"></div><div class="px"></div><div class="px"></div>
+          </div>
+          <div class="np" id="pinPad">
+            <button class="nk" onclick="pinKey('1')">1</button><button class="nk" onclick="pinKey('2')">2</button><button class="nk" onclick="pinKey('3')">3</button>
+            <button class="nk" onclick="pinKey('4')">4</button><button class="nk" onclick="pinKey('5')">5</button><button class="nk" onclick="pinKey('6')">6</button>
+            <button class="nk" onclick="pinKey('7')">7</button><button class="nk" onclick="pinKey('8')">8</button><button class="nk" onclick="pinKey('9')">9</button>
+            <button class="nk nk-e"></button><button class="nk" onclick="pinKey('0')">0</button><button class="nk nk-d" onclick="pinKey('del')">⌫</button>
+          </div>
+        </div>
+        <div class="pf"><button class="btn btn-t" id="btnValidarPin" onclick="validatePin()" disabled>Validar</button></div>
+      </div>
+
+      <!-- E7: ÉXITO TOTAL -->
+      <div class="scr" data-s="6">
+        <div class="ok">
+          <div class="ok-chk">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="13,24 21,32 35,17"/>
+            </svg>
+          </div>
+          <div id="successAmount" style="font-size:30px; font-weight:900; color:white;">S/ 0.00</div>
+          <div style="font-size:18px; font-weight:700; color:rgba(255,255,255,0.92);">RECIBIDO</div>
+          <div style="display:flex; align-items:center; gap:6px; margin-top:16px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+            <span style="font-size:12px; color:rgba(255,255,255,0.45); font-weight:500;">Cobro exitoso</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- E8: PIN INCORRECTO -->
+      <div class="scr" data-s="7">
+        <div class="acc"></div>
+        <div class="bd" style="gap:14px;">
+          <div class="ic ic-r">
+            <svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="var(--err)" stroke-width="3.5" stroke-linecap="round">
+              <line x1="11" y1="11" x2="27" y2="27"/><line x1="27" y1="11" x2="11" y2="27"/>
+            </svg>
+          </div>
+          <div style="font-size:22px; font-weight:800; color:var(--err);">Clave incorrecta</div>
+          <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Por favor, intente nuevamente.</div>
+        </div>
+        <div class="ft"><button class="btn btn-t" onclick="retryPin()">Reintentar</button></div>
+      </div>
+
+      <!-- E9: TARJETA NO LEÍDA -->
+      <div class="scr" data-s="8">
+        <div class="acc"></div>
+        <div class="bd" style="gap:14px;">
+          <div style="position:relative;">
+            <img src="Recursos/Mask group.png" style="width:90px; height:auto; opacity:0.35;" alt="Tarjeta">
+            <div style="position:absolute; bottom:-6px; right:-6px; width:36px; height:36px; background:var(--orange-bg); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 20h20L12 2z" fill="none"/><line x1="12" y1="9" x2="12" y2="14"/><circle cx="12" cy="17" r="1" fill="var(--orange)" stroke="none"/>
               </svg>
             </div>
           </div>
-          <span>O acerque su tarjeta</span>
+          <div style="font-size:22px; font-weight:800; color:var(--orange);">Error de lectura</div>
+          <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Limpie el chip o intente<br>con otra tarjeta.</div>
         </div>
+        <div class="ft"><button class="btn btn-t" onclick="retryCard()">Reintentar</button></div>
       </div>
-    </div>
 
-    <!-- E3: SOLO TARJETA > 2500 -->
-    <div class="scr" data-s="2">
-      <div class="acc"></div>
-      <div class="bd" style="gap:12px;">
-        <div style="font-size:12px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
-        <div style="font-size:32px; font-weight:900; color:var(--black); letter-spacing:-0.5px;">S/ 3,000.00</div>
-        <div style="width:40px; height:4px; background:var(--red); border-radius:2px;"></div>
-        <div class="nfc nfc-xl" style="width:170px; height:170px;">
-          <div class="nr"></div><div class="nr"></div><div class="nr"></div>
-          <div class="nfc-c">
-            <img src="Recursos/Mask group.png" style="width:72px; height:auto;" alt="NFC">
-          </div>
-        </div>
-        <div style="font-size:16px; font-weight:700; color:var(--black); text-align:center; line-height:1.45;">
-          Por favor, acerque o<br>inserte su tarjeta
-        </div>
-      </div>
-    </div>
-
-    <!-- E4: PROCESANDO PASO 1 -->
-    <div class="scr" data-s="3">
-      <div class="bd">
-        <div style="display:flex; align-items:baseline;">
-          <span style="font-weight:900; font-size:36px; color:#bbb;">izi</span><span style="font-weight:900; font-size:36px; color:#ddd;">pay</span>
-        </div>
-        <div style="font-size:16px; color:var(--gray-dark); font-weight:600; margin-top:10px;">Por favor, espera un momento</div>
-      </div>
-    </div>
-
-    <!-- E5: PROCESANDO PASO 2 -->
-    <div class="scr" data-s="4">
-      <div class="bd" style="gap:24px;">
-        <div class="spin"></div>
-        <div style="font-size:15px; color:var(--gray-dark); font-weight:600; text-align:center; line-height:1.6; max-width:260px;">
-          Estamos procesando su transacción.<br>Por favor, espera un momento
-        </div>
-      </div>
-    </div>
-
-    <!-- E6: SOLICITUD DE PIN -->
-    <div class="scr" data-s="5">
-      <div class="mh"><span>Código de verificación</span></div>
-      <div class="pin-a">
-        <div style="font-size:14px; color:var(--gray); font-weight:600;">Ingrese su PIN</div>
-        <div class="pb">
-          <div class="px on"></div><div class="px on"></div><div class="px"></div><div class="px"></div>
-        </div>
-        <div class="np">
-          <button class="nk">1</button><button class="nk">2</button><button class="nk">3</button>
-          <button class="nk">4</button><button class="nk">5</button><button class="nk">6</button>
-          <button class="nk">7</button><button class="nk">8</button><button class="nk">9</button>
-          <button class="nk nk-e"></button><button class="nk">0</button><button class="nk nk-d">⌫</button>
-        </div>
-      </div>
-      <div class="pf"><button class="btn btn-t">Validar</button></div>
-    </div>
-
-    <!-- E7: ÉXITO TOTAL -->
-    <div class="scr" data-s="6">
-      <div class="ok">
-        <div class="ok-chk">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="white" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="13,24 21,32 35,17"/>
-          </svg>
-        </div>
-        <div style="font-size:30px; font-weight:900; color:white;">S/ 150.00</div>
-        <div style="font-size:18px; font-weight:700; color:rgba(255,255,255,0.92);">RECIBIDO</div>
-        <div style="display:flex; align-items:center; gap:6px; margin-top:16px;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
-          <span style="font-size:12px; color:rgba(255,255,255,0.45); font-weight:500;">Cobro exitoso</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- E8: PIN INCORRECTO -->
-    <div class="scr" data-s="7">
-      <div class="acc"></div>
-      <div class="bd" style="gap:14px;">
-        <div class="ic ic-r">
-          <svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="var(--err)" stroke-width="3.5" stroke-linecap="round">
-            <line x1="11" y1="11" x2="27" y2="27"/><line x1="27" y1="11" x2="11" y2="27"/>
-          </svg>
-        </div>
-        <div style="font-size:22px; font-weight:800; color:var(--err);">Clave incorrecta</div>
-        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Por favor, intente nuevamente.</div>
-      </div>
-      <div class="ft"><button class="btn btn-t">Reintentar</button></div>
-    </div>
-
-    <!-- E9: TARJETA NO LEÍDA -->
-    <div class="scr" data-s="8">
-      <div class="acc"></div>
-      <div class="bd" style="gap:14px;">
-        <div style="position:relative;">
-          <img src="Recursos/Mask group.png" style="width:90px; height:auto; opacity:0.35;" alt="Tarjeta">
-          <div style="position:absolute; bottom:-6px; right:-6px; width:36px; height:36px; background:var(--orange-bg); border-radius:50%; display:flex; align-items:center; justify-content:center;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2L2 20h20L12 2z" fill="none"/><line x1="12" y1="9" x2="12" y2="14"/><circle cx="12" cy="17" r="1" fill="var(--orange)" stroke="none"/>
+      <!-- E10: ERROR CONECTIVIDAD -->
+      <div class="scr" data-s="9">
+        <div class="acc"></div>
+        <div class="bd" style="gap:14px;">
+          <div class="ic ic-o">
+            <svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="var(--orange)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 6L4 32h30L19 6z" fill="none"/><line x1="19" y1="15" x2="19" y2="23"/><circle cx="19" cy="27" r="1.5" fill="var(--orange)" stroke="none"/>
             </svg>
           </div>
+          <div style="font-size:22px; font-weight:800; color:var(--orange);">Error de conexión</div>
+          <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">No se realizó el cobro.</div>
+          <div style="font-size:13px; color:var(--gray); text-align:center;">Verifique su señal y reintente.</div>
         </div>
-        <div style="font-size:22px; font-weight:800; color:var(--orange);">Error de lectura</div>
-        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Limpie el chip o intente<br>con otra tarjeta.</div>
+        <div class="ft"><button class="btn btn-t" onclick="retryConnection()">Reintentar</button></div>
       </div>
-      <div class="ft"><button class="btn btn-t">Reintentar</button></div>
+
+      <!-- E11: RECHAZO FIRMA -->
+      <div class="scr" data-s="10">
+        <div class="acc"></div>
+        <div class="bd" style="gap:14px;">
+          <div class="ic ic-r">
+            <svg width="40" height="40" viewBox="0 0 42 42" fill="none" stroke-linecap="round">
+              <circle cx="21" cy="21" r="17" stroke="var(--err)" stroke-width="3" fill="none"/>
+              <line x1="10" y1="10" x2="32" y2="32" stroke="var(--err)" stroke-width="3"/>
+            </svg>
+          </div>
+          <div style="font-size:20px; font-weight:800; color:var(--black); text-align:center; line-height:1.3;">Transacción<br>no permitida</div>
+          <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Use una tarjeta con PIN<br>o Contactless.</div>
+        </div>
+        <div class="ft" style="gap:8px;">
+          <button class="btn btn-t" onclick="retryCard()">Reintentar</button>
+          <button class="btn btn-o" onclick="resetAll()">Cancelar</button>
+        </div>
+      </div>
+
+    </div><!-- /screen-area -->
+  </div><!-- /pos-wrap -->
+
+  <!-- ===== SCENARIO PANEL (RIGHT) ===== -->
+  <div class="scenario-panel disabled" id="scenarioPanel">
+    <div class="sp-title">Simular escenario</div>
+    <div class="sp-subtitle" id="spSubtitle">Ingresa un monto y presiona ✓</div>
+
+    <!-- Happy path -->
+    <div class="sp-group">
+      <div class="sp-group-label">Flujo exitoso</div>
+
+      <button class="sp-btn" id="spQrPay" onclick="runScenario('qr-pay')">
+        <div class="sp-icon sp-icon-teal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008380" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="4" height="4"/></svg>
+        </div>
+        <div class="sp-text">
+          <div class="sp-name">Pago con QR</div>
+          <div class="sp-desc">Cliente escanea con Yape o Plin</div>
+        </div>
+      </button>
+
+      <button class="sp-btn" onclick="runScenario('success')">
+        <div class="sp-icon sp-icon-green">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <div class="sp-text">
+          <div class="sp-name">Tarjeta insertada</div>
+          <div class="sp-desc">Chip + PIN obligatorio</div>
+        </div>
+      </button>
+
+      <button class="sp-btn" id="spNfcPay" onclick="runScenario('nfc-pay')">
+        <div class="sp-icon sp-icon-teal">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008380" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="2.5" fill="#008380"/><path d="M8 16a6 6 0 010-8"/><path d="M16 8a6 6 0 010 8"/></svg>
+        </div>
+        <div class="sp-text">
+          <div class="sp-name">Tarjeta contactless</div>
+          <div class="sp-desc" id="spNfcDesc">Acerca tarjeta NFC al POS</div>
+        </div>
+      </button>
     </div>
 
-    <!-- E10: ERROR CONECTIVIDAD -->
-    <div class="scr" data-s="9">
-      <div class="acc"></div>
-      <div class="bd" style="gap:14px;">
-        <div class="ic ic-o">
-          <svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="var(--orange)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 6L4 32h30L19 6z" fill="none"/><line x1="19" y1="15" x2="19" y2="23"/><circle cx="19" cy="27" r="1.5" fill="var(--orange)" stroke="none"/>
-          </svg>
+    <!-- PIN errors -->
+    <div class="sp-group" id="spPinGroup">
+      <div class="sp-group-label">Errores de PIN</div>
+
+      <button class="sp-btn" onclick="runScenario('pin-wrong')">
+        <div class="sp-icon sp-icon-red">✕</div>
+        <div class="sp-text">
+          <div class="sp-name">PIN incorrecto</div>
+          <div class="sp-desc">Cliente ingresa clave errónea</div>
         </div>
-        <div style="font-size:22px; font-weight:800; color:var(--orange);">Error de conexión</div>
-        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">No se realizó el cobro.</div>
-        <div style="font-size:13px; color:var(--gray); text-align:center;">Verifique su señal y reintente.</div>
-      </div>
-      <div class="ft"><button class="btn btn-t">Reintentar</button></div>
+      </button>
     </div>
 
-    <!-- E11: RECHAZO FIRMA -->
-    <div class="scr" data-s="10">
-      <div class="acc"></div>
-      <div class="bd" style="gap:14px;">
-        <div class="ic ic-r">
-          <svg width="40" height="40" viewBox="0 0 42 42" fill="none" stroke-linecap="round">
-            <circle cx="21" cy="21" r="17" stroke="var(--err)" stroke-width="3" fill="none"/>
-            <line x1="10" y1="10" x2="32" y2="32" stroke="var(--err)" stroke-width="3"/>
-          </svg>
+    <!-- Card errors -->
+    <div class="sp-group">
+      <div class="sp-group-label">Errores de tarjeta</div>
+
+      <button class="sp-btn" onclick="runScenario('card-unread')">
+        <div class="sp-icon sp-icon-orange">⚠</div>
+        <div class="sp-text">
+          <div class="sp-name">Tarjeta no leída</div>
+          <div class="sp-desc">Chip dañado o mal insertada</div>
         </div>
-        <div style="font-size:20px; font-weight:800; color:var(--black); text-align:center; line-height:1.3;">Transacción<br>no permitida</div>
-        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Use una tarjeta con PIN<br>o Contactless.</div>
-      </div>
-      <div class="ft" style="gap:8px;">
-        <button class="btn btn-t">Reintentar</button>
-        <button class="btn btn-o">Cancelar</button>
-      </div>
+      </button>
+
+      <button class="sp-btn" onclick="runScenario('card-signature')">
+        <div class="sp-icon sp-icon-red">⊘</div>
+        <div class="sp-text">
+          <div class="sp-name">Rechazo por firma</div>
+          <div class="sp-desc">Tarjeta solo acepta firma</div>
+        </div>
+      </button>
     </div>
 
-  </div><!-- /screen-area -->
-</div><!-- /pos-wrap -->
+    <!-- Connection errors -->
+    <div class="sp-group">
+      <div class="sp-group-label">Errores de conexión</div>
+
+      <button class="sp-btn" onclick="runScenario('network-error')">
+        <div class="sp-icon sp-icon-orange">↯</div>
+        <div class="sp-text">
+          <div class="sp-name">Error de conexión</div>
+          <div class="sp-desc">Sin red / timeout</div>
+        </div>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /sim-layout -->
 
 <!-- ===== SCENARIO LABELS ===== -->
 <div id="labels">
   <div class="sc-info active" data-l="0"><div class="sc-t">1 — QR Estático (Idle)</div><div class="sc-d">POS encendido esperando venta. QR estático para Yape, Plin o Tarjeta.</div></div>
-  <div class="sc-info" data-l="1"><div class="sc-t">2 — QR Dinámico (&lt; S/ 2,500)</div><div class="sc-d">Monto S/ 150.00 + QR dinámico + NFC glow.</div></div>
+  <div class="sc-info" data-l="1"><div class="sc-t">2 — QR Dinámico (&lt; S/ 2,500)</div><div class="sc-d">Monto ingresado + QR dinámico + NFC glow.</div></div>
   <div class="sc-info" data-l="2"><div class="sc-t">3 — Solo Tarjeta (&gt; S/ 2,500)</div><div class="sc-d">Sin QR. Solo NFC/Chip. Animación grande.</div></div>
   <div class="sc-info" data-l="3"><div class="sc-t">4 — Procesando (Paso 1)</div><div class="sc-d">Logo Izipay gris. Pantalla limpia.</div></div>
   <div class="sc-info" data-l="4"><div class="sc-t">5 — Procesando (Paso 2)</div><div class="sc-d">Spinner teal + mensaje de validación.</div></div>
   <div class="sc-info" data-l="5"><div class="sc-t">6 — Solicitud de PIN</div><div class="sc-d">Monto > S/ 80. Teclado numérico + Validar.</div></div>
-  <div class="sc-info" data-l="6"><div class="sc-t">7 — Éxito Total</div><div class="sc-d">Verde full. Check + RECIBIDO + audio.</div></div>
+  <div class="sc-info" data-l="6"><div class="sc-t">7 — Éxito Total</div><div class="sc-d">Verde full. Check + RECIBIDO.</div></div>
   <div class="sc-info" data-l="7"><div class="sc-t">8 — PIN Incorrecto</div><div class="sc-d">X roja + reintentar.</div></div>
   <div class="sc-info" data-l="8"><div class="sc-t">9 — Tarjeta No Leída</div><div class="sc-d">Error de chip. Limpie o use otra tarjeta.</div></div>
   <div class="sc-info" data-l="9"><div class="sc-t">10 — Error de Conectividad</div><div class="sc-d">Falla de red. No se realizó el cobro.</div></div>
@@ -501,6 +932,17 @@
 <nav class="nav" id="nav"></nav>
 
 <script>
+  const screens = document.querySelectorAll('.scr');
+  const labels = document.querySelectorAll('.sc-info');
+  const nav = document.getElementById('nav');
+  const scenarioPanel = document.getElementById('scenarioPanel');
+  let cur = 0;
+  let mode = 'interactive';
+  let amountStr = '';
+  let pinStr = '';
+  let currentAmount = 0;
+  let activeTimeout = null;
+
   const L = [
     '1: QR Idle','2: QR < 2500','3: > 2500',
     '4: Proc. 1','5: Proc. 2','6: PIN',
@@ -508,16 +950,11 @@
     '10: Red','11: Firma'
   ];
 
-  const screens = document.querySelectorAll('.scr');
-  const labels = document.querySelectorAll('.sc-info');
-  const nav = document.getElementById('nav');
-  let cur = 0;
-
   L.forEach((l, i) => {
     const b = document.createElement('button');
     b.className = 'nb' + (i === 0 ? ' on' : '');
     b.textContent = l;
-    b.onclick = () => go(i);
+    b.onclick = () => { if (mode === 'manual') go(i); };
     nav.appendChild(b);
   });
 
@@ -528,10 +965,308 @@
     nav.querySelectorAll('.nb').forEach((b, j) => b.classList.toggle('on', j === i));
   }
 
+  function clearTimeouts() {
+    if (activeTimeout) { clearTimeout(activeTimeout); activeTimeout = null; }
+  }
+
+  function showScenarios(enabled) {
+    scenarioPanel.classList.toggle('disabled', !enabled);
+    const pinGroup = document.getElementById('spPinGroup');
+    if (pinGroup) pinGroup.style.display = currentAmount > 80 ? 'flex' : 'none';
+    const qrBtn = document.getElementById('spQrPay');
+    if (qrBtn) qrBtn.style.display = currentAmount >= 2500 ? 'none' : 'flex';
+    const nfcDesc = document.getElementById('spNfcDesc');
+    if (nfcDesc) nfcDesc.textContent = currentAmount > 80
+      ? 'NFC + PIN (monto > S/ 80)'
+      : 'Sin PIN (monto ≤ S/ 80)';
+  }
+
+  function setMode(m) {
+    mode = m;
+    document.getElementById('modeInteractive').classList.toggle('on', m === 'interactive');
+    document.getElementById('modeManual').classList.toggle('on', m === 'manual');
+    document.getElementById('merchantPanel').style.opacity = m === 'interactive' ? '1' : '0.4';
+    document.getElementById('merchantPanel').style.pointerEvents = m === 'interactive' ? 'auto' : 'none';
+    nav.style.opacity = m === 'manual' ? '1' : '0.4';
+    nav.style.pointerEvents = m === 'manual' ? 'auto' : 'none';
+    if (m === 'manual') resetAll();
+  }
+
+  function formatAmount(val) {
+    return parseFloat(val || 0).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // ===== MERCHANT NUMPAD =====
+  function numpad(key) {
+    if (mode !== 'interactive') return;
+    if (key === 'C') {
+      amountStr = '';
+    } else if (key === 'del') {
+      amountStr = amountStr.slice(0, -1);
+    } else if (key === '.') {
+      if (!amountStr.includes('.')) amountStr += amountStr ? '.' : '0.';
+    } else {
+      if (amountStr.includes('.') && amountStr.split('.')[1].length >= 2) return;
+      if (amountStr.length >= 8) return;
+      amountStr += key;
+    }
+    currentAmount = parseFloat(amountStr || '0');
+    document.getElementById('amountDisplay').textContent = formatAmount(currentAmount);
+    document.getElementById('btnCobrar').disabled = currentAmount <= 0;
+  }
+
+  // ===== COBRAR =====
+  function cobrar() {
+    if (currentAmount <= 0) return;
+    const formatted = 'S/ ' + formatAmount(currentAmount);
+
+    setLcd('S/ ' + formatAmount(currentAmount), 'ESPERANDO...', 'lcd-green');
+    setStatus('Esperando pago', 'ms-waiting');
+
+    if (currentAmount < 2500) {
+      document.getElementById('dynAmount').textContent = formatted;
+      go(1);
+    } else {
+      document.getElementById('cardAmount').textContent = formatted;
+      go(2);
+    }
+
+    document.getElementById('successAmount').textContent = formatted;
+    disableNumpad(true);
+    showScenarios(true);
+
+    document.getElementById('spSubtitle').textContent =
+      currentAmount >= 2500
+        ? 'Monto > S/ 2,500 — Solo tarjeta'
+        : currentAmount > 80
+          ? 'Monto > S/ 80 — Requiere PIN'
+          : 'Monto ≤ S/ 80 — Contactless rápido';
+    showScenarios(true);
+  }
+
+  // ===== SCENARIO RUNNER =====
+  function runScenario(type) {
+    clearTimeouts();
+    showScenarios(false);
+    document.getElementById('spSubtitle').textContent = 'Simulando escenario...';
+
+    if (type === 'nfc-pay') {
+      setLcd('PROCESANDO...', 'NFC DETECTADO', 'lcd-green');
+      setStatus('NFC detectado', 'ms-processing');
+      go(3);
+
+      activeTimeout = setTimeout(() => {
+        go(4);
+        activeTimeout = setTimeout(() => {
+          if (currentAmount > 80) {
+            setLcd('INGRESE PIN', '****', 'lcd-green');
+            setStatus('Esperando PIN', 'ms-waiting');
+            pinStr = '';
+            pendingScenario = 'success';
+            updatePinBoxes();
+            document.getElementById('btnValidarPin').disabled = true;
+            go(5);
+          } else {
+            showSuccess();
+          }
+        }, 1800);
+      }, 1500);
+      return;
+    }
+
+    if (type === 'qr-pay') {
+      setLcd('PROCESANDO...', 'QR ESCANEADO', 'lcd-green');
+      setStatus('QR escaneado', 'ms-processing');
+      go(3);
+
+      activeTimeout = setTimeout(() => {
+        go(4);
+        activeTimeout = setTimeout(() => {
+          showSuccess();
+        }, 2000);
+      }, 1500);
+      return;
+    }
+
+    if (type === 'card-unread') {
+      setLcd('ERROR LECTURA', 'REINTENTE', 'lcd-red');
+      setStatus('Error de lectura', 'ms-error');
+      go(8);
+      return;
+    }
+
+    if (type === 'card-signature') {
+      setLcd('RECHAZO:', 'FIRMA', 'lcd-red');
+      setStatus('Rechazo por firma', 'ms-error');
+      go(10);
+      return;
+    }
+
+    setLcd('PROCESANDO...', '', 'lcd-green');
+    setStatus('Procesando', 'ms-processing');
+    go(3);
+
+    activeTimeout = setTimeout(() => {
+      go(4);
+
+      activeTimeout = setTimeout(() => {
+        if (type === 'network-error') {
+          setLcd('ERROR RED', 'TIMEOUT', 'lcd-orange');
+          setStatus('Error de conexión', 'ms-error');
+          go(9);
+          return;
+        }
+
+        if (type === 'success-nopin' || currentAmount <= 80) {
+          showSuccess();
+          return;
+        }
+
+        if (type === 'success') {
+          setLcd('INGRESE PIN', '****', 'lcd-green');
+          setStatus('Esperando PIN', 'ms-waiting');
+          pinStr = '';
+          pendingScenario = 'success';
+          updatePinBoxes();
+          document.getElementById('btnValidarPin').disabled = true;
+          go(5);
+          return;
+        }
+
+        if (type === 'pin-wrong') {
+          setLcd('INGRESE PIN', '****', 'lcd-green');
+          setStatus('Esperando PIN', 'ms-waiting');
+          pinStr = '';
+          pendingScenario = 'pin-wrong';
+          updatePinBoxes();
+          document.getElementById('btnValidarPin').disabled = true;
+          go(5);
+          return;
+        }
+      }, 1800);
+    }, 1500);
+  }
+
+  let pendingScenario = 'success';
+
+  // ===== PIN =====
+  function pinKey(key) {
+    if (mode !== 'interactive') return;
+    if (key === 'del') {
+      pinStr = pinStr.slice(0, -1);
+    } else if (pinStr.length < 4) {
+      pinStr += key;
+    }
+    updatePinBoxes();
+    document.getElementById('btnValidarPin').disabled = pinStr.length < 4;
+  }
+
+  function updatePinBoxes() {
+    const boxes = document.querySelectorAll('#pinBoxes .px');
+    boxes.forEach((b, i) => {
+      b.classList.toggle('on', i < pinStr.length);
+    });
+  }
+
+  function validatePin() {
+    if (pinStr.length < 4) return;
+    setLcd('VALIDANDO...', '', 'lcd-green');
+    setStatus('Validando PIN', 'ms-processing');
+    go(4);
+
+    activeTimeout = setTimeout(() => {
+      if (pendingScenario === 'pin-wrong') {
+        setLcd('ERROR', 'PIN INCORRECTO', 'lcd-red');
+        setStatus('PIN incorrecto', 'ms-error');
+        go(7);
+      } else {
+        showSuccess();
+      }
+    }, 2000);
+  }
+
+  function enableRetryPanel() {
+    document.getElementById('spSubtitle').textContent = 'Elige otro escenario para reintentar';
+    showScenarios(true);
+  }
+
+  function retryPin() {
+    pinStr = '';
+    updatePinBoxes();
+    document.getElementById('btnValidarPin').disabled = true;
+    setLcd('S/ ' + formatAmount(currentAmount), 'ESPERANDO...', 'lcd-green');
+    setStatus('Esperando pago', 'ms-waiting');
+    go(currentAmount >= 2500 ? 2 : 1);
+    enableRetryPanel();
+  }
+
+  function retryCard() {
+    setLcd('S/ ' + formatAmount(currentAmount), currentAmount >= 2500 ? 'SOLO TARJETA' : 'ESPERANDO...', 'lcd-green');
+    setStatus('Esperando tarjeta', 'ms-waiting');
+    go(currentAmount >= 2500 ? 2 : 1);
+    enableRetryPanel();
+  }
+
+  function retryConnection() {
+    setLcd('S/ ' + formatAmount(currentAmount), 'ESPERANDO...', 'lcd-green');
+    setStatus('Esperando pago', 'ms-waiting');
+    go(currentAmount >= 2500 ? 2 : 1);
+    enableRetryPanel();
+  }
+
+  function showSuccess() {
+    setLcd('APROBADO', 'S/ ' + formatAmount(currentAmount), 'lcd-green');
+    setStatus('Cobro exitoso', 'ms-success');
+    go(6);
+  }
+
+  // ===== MERCHANT LCD =====
+  function setLcd(line1, line2, cls) {
+    const l1 = document.getElementById('lcdLine1');
+    const l2 = document.getElementById('lcdLine2');
+    l1.textContent = line1;
+    l2.textContent = line2;
+    l1.className = 'lcd-line ' + cls;
+    l2.className = 'lcd-line ' + cls;
+  }
+
+  function setStatus(text, cls) {
+    const s = document.getElementById('merchantStatus');
+    s.textContent = text;
+    s.className = 'merchant-status ' + cls;
+  }
+
+  function disableNumpad(disabled) {
+    document.querySelectorAll('#merchantNumpad .mk').forEach(b => b.disabled = disabled);
+    document.getElementById('btnCobrar').disabled = disabled;
+  }
+
+  // ===== RESET =====
+  function resetAll() {
+    clearTimeouts();
+    amountStr = '';
+    pinStr = '';
+    currentAmount = 0;
+    pendingScenario = 'success';
+    document.getElementById('amountDisplay').textContent = '0.00';
+    document.getElementById('btnCobrar').disabled = true;
+    setLcd('IZIPAY', 'LISTO', 'lcd-green');
+    setStatus('Esperando monto', 'ms-idle');
+    disableNumpad(false);
+    updatePinBoxes();
+    showScenarios(false);
+    document.getElementById('spSubtitle').textContent = 'Ingresa un monto y presiona ✓';
+    go(0);
+  }
+
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); go(Math.min(cur + 1, L.length - 1)); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); go(Math.max(cur - 1, 0)); }
+    if (mode === 'manual') {
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(Math.min(cur + 1, L.length - 1)); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(Math.max(cur - 1, 0)); }
+    }
   });
+
+  setMode('interactive');
 </script>
 
 </body>
