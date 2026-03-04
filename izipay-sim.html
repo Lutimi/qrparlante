@@ -665,13 +665,14 @@
         </div>
       </div>
 
-      <!-- E2: QR DINÁMICO < 2500 -->
+      <!-- E2: QR DINÁMICO < 2501 -->
       <div class="scr" data-s="1">
         <div class="acc"></div>
         <div class="bd" style="justify-content:space-evenly; padding:10px 20px;">
           <div style="text-align:center;">
             <div style="font-size:11px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
             <div id="dynAmount" style="font-size:32px; font-weight:900; color:var(--teal); letter-spacing:-0.5px; margin-top:2px;">S/ 0.00</div>
+            <div style="font-size:13px; color:var(--gray); font-weight:600; margin-top:2px;">Bodega Don Lucho</div>
           </div>
           <div class="wl">
             <img src="Recursos/yape.svg" alt="Yape" style="height:30px;">
@@ -692,12 +693,13 @@
         </div>
       </div>
 
-      <!-- E3: SOLO TARJETA > 2500 -->
+      <!-- E3: SOLO TARJETA > 2501 -->
       <div class="scr" data-s="2">
         <div class="acc"></div>
         <div class="bd" style="gap:12px;">
           <div style="font-size:12px; color:var(--gray); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Monto a pagar</div>
           <div id="cardAmount" style="font-size:32px; font-weight:900; color:var(--black); letter-spacing:-0.5px;">S/ 0.00</div>
+          <div style="font-size:13px; color:var(--gray); font-weight:600;">Bodega Don Lucho</div>
           <div style="width:40px; height:4px; background:var(--red); border-radius:2px;"></div>
           <div class="nfc nfc-xl" style="width:170px; height:170px;">
             <div class="nr"></div><div class="nr"></div><div class="nr"></div>
@@ -706,7 +708,7 @@
             </div>
           </div>
           <div style="font-size:16px; font-weight:700; color:var(--black); text-align:center; line-height:1.45;">
-            Por favor, acerque o<br>inserte su tarjeta
+            Por favor, acerque o<br>inserte su tarjeta al dispositivo
           </div>
         </div>
       </div>
@@ -957,7 +959,7 @@
   let activeTimeout = null;
 
   const L = [
-    '1: QR Idle','2: QR < 2500','3: > 2500',
+    '1: QR Idle','2: QR < 2501','3: > 2501',
     '4: Proc. 1','5: Proc. 2','6: PIN',
     '7: Éxito','8: PIN Err','9: Lectura',
     '10: Red','11: Firma'
@@ -987,7 +989,7 @@
     const pinGroup = document.getElementById('spPinGroup');
     if (pinGroup) pinGroup.style.display = currentAmount > 80 ? 'flex' : 'none';
     const qrBtn = document.getElementById('spQrPay');
-    if (qrBtn) qrBtn.style.display = currentAmount >= 2500 ? 'none' : 'flex';
+    if (qrBtn) qrBtn.style.display = currentAmount >= 2501 ? 'none' : 'flex';
     const nfcDesc = document.getElementById('spNfcDesc');
     if (nfcDesc) nfcDesc.textContent = currentAmount > 80
       ? 'NFC + PIN (monto > S/ 80)'
@@ -1036,7 +1038,7 @@
     setLcd('S/ ' + formatAmount(currentAmount), 'ESPERANDO...', 'lcd-green');
     setStatus('Esperando pago', 'ms-waiting');
 
-    if (currentAmount < 2500) {
+    if (currentAmount < 2501) {
       document.getElementById('dynAmount').textContent = formatted;
       go(1);
     } else {
@@ -1049,7 +1051,7 @@
     showScenarios(true);
 
     document.getElementById('spSubtitle').textContent =
-      currentAmount >= 2500
+      currentAmount >= 2501
         ? 'Monto > S/ 2,500 — Solo tarjeta'
         : currentAmount > 80
           ? 'Monto > S/ 80 — Requiere PIN'
@@ -1209,21 +1211,21 @@
     document.getElementById('btnValidarPin').disabled = true;
     setLcd('S/ ' + formatAmount(currentAmount), 'ESPERANDO...', 'lcd-green');
     setStatus('Esperando pago', 'ms-waiting');
-    go(currentAmount >= 2500 ? 2 : 1);
+    go(currentAmount >= 2501 ? 2 : 1);
     enableRetryPanel();
   }
 
   function retryCard() {
-    setLcd('S/ ' + formatAmount(currentAmount), currentAmount >= 2500 ? 'SOLO TARJETA' : 'ESPERANDO...', 'lcd-green');
+    setLcd('S/ ' + formatAmount(currentAmount), currentAmount >= 2501 ? 'SOLO TARJETA' : 'ESPERANDO...', 'lcd-green');
     setStatus('Esperando tarjeta', 'ms-waiting');
-    go(currentAmount >= 2500 ? 2 : 1);
+    go(currentAmount >= 2501 ? 2 : 1);
     enableRetryPanel();
   }
 
   function retryConnection() {
     setLcd('S/ ' + formatAmount(currentAmount), 'ESPERANDO...', 'lcd-green');
     setStatus('Esperando pago', 'ms-waiting');
-    go(currentAmount >= 2500 ? 2 : 1);
+    go(currentAmount >= 2501 ? 2 : 1);
     enableRetryPanel();
   }
 
