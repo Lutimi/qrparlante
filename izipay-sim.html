@@ -52,7 +52,7 @@
 
     /* ===== MERCHANT BACK (POS PHYSICAL) ===== */
     .merchant {
-      width: 230px;
+      width: 260px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -71,55 +71,56 @@
     }
 
     .pos-back {
-      width: 210px;
-      background: linear-gradient(170deg, #f0f0f0 0%, #d8d8d8 50%, #c8c8c8 100%);
-      border-radius: 24px 24px 20px 20px;
-      padding: 14px 16px 18px;
+      width: 240px;
+      background: linear-gradient(175deg, #f5f5f0 0%, #e8e6e0 40%, #ddd8d0 100%);
+      border-radius: 18px;
+      padding: 16px 14px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       box-shadow:
         0 8px 30px rgba(0,0,0,0.5),
-        inset 0 1px 0 rgba(255,255,255,0.6),
-        inset 0 -2px 4px rgba(0,0,0,0.08);
+        inset 0 1px 0 rgba(255,255,255,0.7),
+        inset 0 -2px 4px rgba(0,0,0,0.06);
       position: relative;
     }
 
     /* Speaker grille */
     .speaker {
-      width: 80px;
-      height: 28px;
-      background: #bbb;
-      border-radius: 14px;
+      width: 70px;
+      height: 20px;
+      background: linear-gradient(180deg, #c5c5c0, #b0b0aa);
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 3px;
-      padding: 0 10px;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+      padding: 0 8px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
     }
 
     .speaker-dot {
-      width: 3px;
-      height: 3px;
-      background: #999;
+      width: 2.5px;
+      height: 2.5px;
+      background: #888;
       border-radius: 50%;
     }
 
     /* LCD screen */
     .merchant-lcd {
       width: 100%;
-      background: #1a2a1a;
-      border-radius: 6px;
-      padding: 8px 10px;
-      min-height: 44px;
+      background: #2a3a2a;
+      border-radius: 4px;
+      padding: 6px 10px;
+      min-height: 38px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 2px;
-      border: 2px solid #aaa;
+      border: 2px solid #999;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
     }
 
     .lcd-line {
@@ -134,17 +135,31 @@
     .lcd-red { color: #ff4444; text-shadow: 0 0 6px rgba(255,68,68,0.4); }
     .lcd-orange { color: #ffaa00; text-shadow: 0 0 6px rgba(255,170,0,0.4); }
 
+    /* Function row (power, F1, Fn, X) */
+    .fn-row {
+      display: flex; gap: 6px; width: 100%; justify-content: center;
+    }
+    .fn-btn {
+      width: 28px; height: 18px; border: none; border-radius: 10px;
+      font-size: 7px; font-weight: 700; color: #555;
+      background: linear-gradient(180deg, #d0d0cc, #bbbbb5);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .fn-btn-red { background: linear-gradient(180deg, #e05050, #c62828); color: white; }
+
     /* Amount display */
     .merchant-display {
       width: 100%;
-      background: #222;
-      border-radius: 6px;
-      padding: 8px 10px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      padding: 6px 10px;
       text-align: right;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      border: 2px solid #aaa;
+      border: 2px solid #999;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
     }
 
     .merchant-amount {
@@ -161,68 +176,98 @@
       margin-right: 4px;
     }
 
-    /* Physical keypad */
+    /* Physical keypad — 4 columns like real POS */
     .merchant-numpad {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 5px;
       width: 100%;
     }
 
     .mk {
-      height: 32px;
+      height: 36px;
       border: none;
-      border-radius: 6px;
-      background: linear-gradient(180deg, #e8e8e8 0%, #d0d0d0 100%);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #e0dfda 0%, #c8c7c0 100%);
       font-family: 'Inter', sans-serif;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       color: #333;
       cursor: pointer;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.5);
+      gap: 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.5);
       transition: all 0.1s;
+      line-height: 1;
+    }
+    .mk-sub {
+      font-size: 6px;
+      font-weight: 600;
+      color: #888;
+      letter-spacing: 0.5px;
+      margin-top: 1px;
     }
 
-    .mk:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
-    .mk:hover { background: linear-gradient(180deg, #f0f0f0 0%, #ddd 100%); }
+    .mk:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0,0,0,0.12); }
+    .mk:hover { background: linear-gradient(180deg, #eae9e4 0%, #d5d4cd 100%); }
+    .mk:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .mk-dot { font-size: 20px; }
+    .mk-yellow {
+      background: linear-gradient(180deg, #f5c842 0%, #e0a800 100%);
+      color: #333;
+    }
+    .mk-yellow:hover { background: linear-gradient(180deg, #ffd54f 0%, #eab600 100%); }
 
-    /* Color action keys */
+    .mk-side {
+      font-size: 16px; font-weight: 800; color: #555;
+    }
+
+    /* Bottom row */
+    .merchant-bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 5px;
+      width: 100%;
+    }
+
+    /* Action keys row */
     .merchant-actions-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 5px;
       width: 100%;
     }
 
     .mk-cancel {
-      background: linear-gradient(180deg, #ff5252 0%, #d32f2f 100%);
+      background: linear-gradient(180deg, #e85050 0%, #c62828 100%);
       color: white;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 800;
-      letter-spacing: 0.3px;
     }
     .mk-cancel:hover { background: linear-gradient(180deg, #ff6b6b 0%, #e53935 100%); }
 
     .mk-clear-key {
-      background: linear-gradient(180deg, #ffca28 0%, #f9a825 100%);
+      background: linear-gradient(180deg, #f5c842 0%, #e0a800 100%);
       color: #333;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 800;
     }
-    .mk-clear-key:hover { background: linear-gradient(180deg, #ffd54f 0%, #ffb300 100%); }
+    .mk-clear-key:hover { background: linear-gradient(180deg, #ffd54f 0%, #eab600 100%); }
 
     .mk-confirm {
-      background: linear-gradient(180deg, #66bb6a 0%, #388e3c 100%);
+      background: linear-gradient(180deg, #4caf50 0%, #2e7d32 100%);
       color: white;
-      font-size: 10px;
+      font-size: 16px;
       font-weight: 800;
+      grid-row: span 2;
+      height: auto;
+      min-height: 36px;
+      border-radius: 8px;
     }
-    .mk-confirm:hover { background: linear-gradient(180deg, #81c784 0%, #43a047 100%); }
+    .mk-confirm:hover { background: linear-gradient(180deg, #66bb6a 0%, #388e3c 100%); }
     .mk-confirm:disabled { background: linear-gradient(180deg, #999 0%, #777 100%); color: #bbb; cursor: not-allowed; }
 
     /* Status indicator */
@@ -620,6 +665,14 @@
         <div class="lcd-line lcd-green" id="lcdLine2">LISTO</div>
       </div>
 
+      <!-- Function row -->
+      <div class="fn-row">
+        <button class="fn-btn fn-btn-red" onclick="actionCancel()">⏻</button>
+        <button class="fn-btn">F1</button>
+        <button class="fn-btn">Fn</button>
+        <button class="fn-btn fn-btn-red" onclick="actionCancel()">✕</button>
+      </div>
+
       <!-- Amount display -->
       <div class="merchant-display">
         <div class="merchant-amount">
@@ -627,27 +680,26 @@
         </div>
       </div>
 
-      <!-- Number keys -->
+      <!-- Numpad 4-column layout -->
       <div class="merchant-numpad" id="merchantNumpad">
-        <button class="mk" onclick="numpad('1')">1</button>
-        <button class="mk" onclick="numpad('2')">2</button>
-        <button class="mk" onclick="numpad('3')">3</button>
-        <button class="mk" onclick="numpad('4')">4</button>
-        <button class="mk" onclick="numpad('5')">5</button>
-        <button class="mk" onclick="numpad('6')">6</button>
-        <button class="mk" onclick="numpad('7')">7</button>
-        <button class="mk" onclick="numpad('8')">8</button>
-        <button class="mk" onclick="numpad('9')">9</button>
-        <button class="mk mk-dot" onclick="numpad('.')">.</button>
-        <button class="mk" onclick="numpad('0')">0</button>
-        <button class="mk" style="font-size:14px;" onclick="numpad('del')">⌫</button>
-      </div>
+        <button class="mk" onclick="numpad('1')">1<span class="mk-sub">..</span></button>
+        <button class="mk" onclick="numpad('2')">2<span class="mk-sub">ABC</span></button>
+        <button class="mk" onclick="numpad('3')">3<span class="mk-sub">DEF</span></button>
+        <button class="mk mk-yellow" onclick="numpad('del')">←</button>
 
-      <!-- Action keys (Cancel / Clear / Confirm) -->
-      <div class="merchant-actions-row">
-        <button class="mk mk-cancel" onclick="actionCancel()">✕</button>
-        <button class="mk mk-clear-key" onclick="numpad('C')">C</button>
-        <button class="mk mk-confirm" id="btnCobrar" onclick="actionConfirm()" disabled>✓</button>
+        <button class="mk" onclick="numpad('4')">4<span class="mk-sub">GHI</span></button>
+        <button class="mk" onclick="numpad('5')">5<span class="mk-sub">JKL</span></button>
+        <button class="mk" onclick="numpad('6')">6<span class="mk-sub">MNO</span></button>
+        <button class="mk mk-side" onclick="numpad('.')">+</button>
+
+        <button class="mk" onclick="numpad('7')">7<span class="mk-sub">PQRS</span></button>
+        <button class="mk" onclick="numpad('8')">8<span class="mk-sub">TUV</span></button>
+        <button class="mk" onclick="numpad('9')">9<span class="mk-sub">WXYZ</span></button>
+        <button class="mk mk-confirm" id="btnCobrar" onclick="actionConfirm()" disabled>↵</button>
+
+        <button class="mk" onclick="numpad('C')">✱</button>
+        <button class="mk" onclick="numpad('0')">0<span class="mk-sub">#</span></button>
+        <button class="mk mk-side">↓</button>
       </div>
     </div>
 
@@ -1339,7 +1391,10 @@
   }
 
   function disableNumpad(disabled) {
-    document.querySelectorAll('#merchantNumpad .mk').forEach(b => b.disabled = disabled);
+    document.querySelectorAll('#merchantNumpad .mk').forEach(b => {
+      if (b.id === 'btnCobrar') return;
+      b.disabled = disabled;
+    });
     document.getElementById('btnCobrar').disabled = disabled;
   }
 
