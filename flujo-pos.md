@@ -9,12 +9,12 @@
 | E3 | Solo Tarjeta (> S/ 2,500) | Sin QR. Solo NFC/Chip. Animación grande | Negro #1A1A1A |
 | E4 | Procesando Paso 1 | Logo Izipay gris. Pantalla limpia | Gris #555 |
 | E5 | Procesando Paso 2 | Spinner teal + mensaje de validación | Gris #555 |
-| E6 | Solicitud de PIN | Monto > S/ 80. Teclado numérico + Validar | Rojo #dc1c1b |
+| E6 | Solicitud de PIN | Monto > S/ 80. Instrucción "Voltee el dispositivo" + PIN en teclado posterior | Rojo #dc1c1b |
 | E7 | Éxito (RECIBIDO) | Verde full. Check + monto + "RECIBIDO" | Verde #28a745 |
-| E8 | PIN Incorrecto | X roja + mensaje + reintentar | Error #D32F2F |
-| E9 | Tarjeta No Leída | Error de chip. Limpie o use otra tarjeta | Naranja #E65100 |
-| E10 | Error de Conexión | Falla de red. No se realizó el cobro | Naranja #E65100 |
-| E11 | Rechazo por Firma | Terminal no acepta firmas. Use PIN o NFC | Error #D32F2F |
+| E8 | PIN Incorrecto | X roja + mensaje. ✓ Reintentar / ✕ Cancelar (teclado posterior) | Error #D32F2F |
+| E9 | Tarjeta No Leída | Error de chip. ✓ Reintentar / ✕ Cancelar (teclado posterior) | Naranja #E65100 |
+| E10 | Error de Conexión | Falla de red. ✓ Reintentar / ✕ Cancelar (teclado posterior) | Naranja #E65100 |
+| E11 | Rechazo por Firma | Terminal no acepta firmas. ✓ Reintentar / ✕ Cancelar (teclado posterior) | Error #D32F2F |
 
 ---
 
@@ -61,8 +61,8 @@ E4: Procesando Paso 1 (logo izipay, ~2 seg)
 ## Validación de PIN
 
 ```
-E6: Solicitud de PIN
-  └─> Cliente ingresa 4 dígitos + Validar
+E6: Solicitud de PIN (pantalla muestra "Voltee el dispositivo")
+  └─> Cliente ingresa 4 dígitos en teclado posterior (auto-valida)
         ├─ PIN correcto ───> E7: Éxito ✅
         └─ PIN incorrecto ─> E8: PIN Incorrecto
 ```
@@ -71,12 +71,14 @@ E6: Solicitud de PIN
 
 ## Flujos de Error y Reintentos
 
-| Error | Pantalla | Acción "Reintentar" | Acción "Cancelar" |
+| Error | Pantalla | Botón ✓ (Reintentar) | Botón ✕ (Cancelar) |
 |-------|----------|---------------------|-------------------|
-| PIN Incorrecto | E8 | → E6 (pedir PIN de nuevo) | — |
-| Tarjeta No Leída | E9 | → E3 (acercar tarjeta de nuevo) | — |
-| Error de Conexión | E10 | → E2 (volver a QR dinámico) | — |
-| Rechazo por Firma | E11 | → E3 (usar otra tarjeta) | → E1 (volver a idle) |
+| PIN Incorrecto | E8 | → Vuelve a pantalla de pago | → E1 (volver a idle) |
+| Tarjeta No Leída | E9 | → Vuelve a pantalla de pago | → E1 (volver a idle) |
+| Error de Conexión | E10 | → Vuelve a pantalla de pago | → E1 (volver a idle) |
+| Rechazo por Firma | E11 | → Vuelve a pantalla de pago | → E1 (volver a idle) |
+
+> **Nota:** Todas las acciones de reintentar/cancelar se realizan desde el teclado posterior del POS (botones ✓ y ✕). La pantalla frontal no tiene botones interactivos.
 
 ---
 
@@ -88,6 +90,8 @@ E6: Solicitud de PIN
 4. **Monto ≤ S/ 80** → Pago directo sin PIN (contactless rápido)
 5. **Tarjetas solo firma** → Rechazadas (terminal no acepta firmas)
 6. **Error de red** → No se cobra, se reintenta
+7. **Pantalla frontal NO tiene botones interactivos** → Toda interacción es desde el teclado posterior (numpad, ✓, ✕)
+8. **PIN se ingresa en teclado posterior** → Pantalla frontal solo muestra instrucción de voltear el dispositivo
 
 ---
 
@@ -106,7 +110,7 @@ flowchart LR
     DEC3{"Conexion\nOK?"}
     E10["E10: Error\nConexion\n---\nSin red/timeout"]
     DEC4{"Monto\n> S/ 80?"}
-    E6["E6: Solicitud PIN\n---\nTeclado numerico\n4 digitos"]
+    E6["E6: Solicitud PIN\n---\nVoltee dispositivo\nPIN en teclado posterior"]
     DEC5{"PIN\ncorrecto?"}
     E8["E8: PIN\nIncorrecto\n---\nX roja"]
     E7["E7: Exito\nRECIBIDO\n---\nVerde + check"]

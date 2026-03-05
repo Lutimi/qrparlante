@@ -121,6 +121,20 @@
       gap: 8px;
       background: var(--white);
     }
+    .ft-hint {
+      flex-shrink: 0; width: 100%;
+      padding: 12px 20px 16px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; font-size: 13px; font-weight: 600; color: var(--gray-dark);
+      background: #f5f5f5; border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .hint-key {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 6px;
+      font-size: 14px; font-weight: 800; color: white;
+    }
+    .hint-green { background: var(--teal); }
+    .hint-red { background: var(--err); }
 
     /* ===== BUTTONS ===== */
     .btn {
@@ -688,8 +702,10 @@
         <div style="font-size:20px; font-weight:700; color:var(--err);">Clave incorrecta</div>
         <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.6;">Por favor, intente nuevamente.</div>
       </div>
-      <div class="ft">
-        <button class="btn btn-t">Reintentar</button>
+      <div class="ft-hint">
+        <span class="hint-key hint-green">✓</span> Reintentar
+        <span style="margin:0 6px; color:var(--gray);">|</span>
+        <span class="hint-key hint-red">✕</span> Cancelar
       </div>
     </div>
   </div>
@@ -720,8 +736,10 @@
         <div style="font-size:20px; font-weight:700; color:var(--orange);">Error de lectura</div>
         <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.6;">Limpie el chip o intente<br>con otra tarjeta.</div>
       </div>
-      <div class="ft">
-        <button class="btn btn-t">Reintentar</button>
+      <div class="ft-hint">
+        <span class="hint-key hint-green">✓</span> Reintentar
+        <span style="margin:0 6px; color:var(--gray);">|</span>
+        <span class="hint-key hint-red">✕</span> Cancelar
       </div>
     </div>
   </div>
@@ -750,8 +768,10 @@
         <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.6;">No se realizó el cobro.</div>
         <div style="font-size:13px; color:var(--gray); text-align:center;">Verifique su señal y reintente.</div>
       </div>
-      <div class="ft">
-        <button class="btn btn-t">Reintentar</button>
+      <div class="ft-hint">
+        <span class="hint-key hint-green">✓</span> Reintentar
+        <span style="margin:0 6px; color:var(--gray);">|</span>
+        <span class="hint-key hint-red">✕</span> Cancelar
       </div>
     </div>
   </div>
@@ -780,9 +800,10 @@
         <div style="font-size:20px; font-weight:700; color:var(--black); text-align:center;">Transacción no permitida</div>
         <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.6;">Use una tarjeta con PIN<br>o Contactless.</div>
       </div>
-      <div class="ft" style="gap:8px;">
-        <button class="btn btn-t">Reintentar</button>
-        <button class="btn btn-o">Cancelar</button>
+      <div class="ft-hint">
+        <span class="hint-key hint-green">✓</span> Reintentar
+        <span style="margin:0 6px; color:var(--gray);">|</span>
+        <span class="hint-key hint-red">✕</span> Cancelar
       </div>
     </div>
   </div>

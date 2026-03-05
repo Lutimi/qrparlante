@@ -289,6 +289,20 @@
       display: flex; flex-direction: column; gap: 8px;
       background: var(--white);
     }
+    .ft-hint {
+      flex-shrink: 0; width: 100%;
+      padding: 12px 20px 16px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; font-size: 13px; font-weight: 600; color: var(--gray-dark);
+      background: var(--bg); border-top: 1px solid rgba(0,0,0,0.06);
+    }
+    .hint-key {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 6px;
+      font-size: 14px; font-weight: 800; color: white;
+    }
+    .hint-green { background: var(--teal); }
+    .hint-red { background: var(--err); }
 
     .btn {
       width: 100%; padding: 14px;
@@ -631,9 +645,9 @@
 
       <!-- Action keys (Cancel / Clear / Confirm) -->
       <div class="merchant-actions-row">
-        <button class="mk mk-cancel" onclick="resetAll()">✕</button>
+        <button class="mk mk-cancel" onclick="actionCancel()">✕</button>
         <button class="mk mk-clear-key" onclick="numpad('C')">C</button>
-        <button class="mk mk-confirm" id="btnCobrar" onclick="cobrar()" disabled>✓</button>
+        <button class="mk mk-confirm" id="btnCobrar" onclick="actionConfirm()" disabled>✓</button>
       </div>
     </div>
 
@@ -798,7 +812,11 @@
           <div style="font-size:22px; font-weight:800; color:var(--err);">Clave incorrecta</div>
           <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Por favor, intente nuevamente.</div>
         </div>
-        <div class="ft"><button class="btn btn-t" onclick="retryPin()">Reintentar</button></div>
+        <div class="ft-hint">
+          <span class="hint-key hint-green">✓</span> Reintentar
+          <span style="margin:0 6px; color:var(--gray);">|</span>
+          <span class="hint-key hint-red">✕</span> Cancelar
+        </div>
       </div>
 
       <!-- E9: TARJETA NO LEÍDA -->
@@ -816,7 +834,11 @@
           <div style="font-size:22px; font-weight:800; color:var(--orange);">Error de lectura</div>
           <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Limpie el chip o intente<br>con otra tarjeta.</div>
         </div>
-        <div class="ft"><button class="btn btn-t" onclick="retryCard()">Reintentar</button></div>
+        <div class="ft-hint">
+          <span class="hint-key hint-green">✓</span> Reintentar
+          <span style="margin:0 6px; color:var(--gray);">|</span>
+          <span class="hint-key hint-red">✕</span> Cancelar
+        </div>
       </div>
 
       <!-- E10: ERROR CONECTIVIDAD -->
@@ -832,7 +854,11 @@
           <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">No se realizó el cobro.</div>
           <div style="font-size:13px; color:var(--gray); text-align:center;">Verifique su señal y reintente.</div>
         </div>
-        <div class="ft"><button class="btn btn-t" onclick="retryConnection()">Reintentar</button></div>
+        <div class="ft-hint">
+          <span class="hint-key hint-green">✓</span> Reintentar
+          <span style="margin:0 6px; color:var(--gray);">|</span>
+          <span class="hint-key hint-red">✕</span> Cancelar
+        </div>
       </div>
 
       <!-- E11: RECHAZO FIRMA -->
@@ -848,9 +874,10 @@
           <div style="font-size:20px; font-weight:800; color:var(--black); text-align:center; line-height:1.3;">Transacción<br>no permitida</div>
           <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Use una tarjeta con PIN<br>o Contactless.</div>
         </div>
-        <div class="ft" style="gap:8px;">
-          <button class="btn btn-t" onclick="retryCard()">Reintentar</button>
-          <button class="btn btn-o" onclick="resetAll()">Cancelar</button>
+        <div class="ft-hint">
+          <span class="hint-key hint-green">✓</span> Reintentar
+          <span style="margin:0 6px; color:var(--gray);">|</span>
+          <span class="hint-key hint-red">✕</span> Cancelar
         </div>
       </div>
 
@@ -1081,6 +1108,26 @@
     pinMode = false;
   }
 
+  // ===== ACTION WRAPPERS (merchant ✓ / ✕) =====
+  const errorScreens = [7, 8, 9, 10]; // PIN err, card read, network, signature
+
+  function actionConfirm() {
+    if (mode !== 'interactive') return;
+    if (pinMode) return;
+    if (errorScreens.includes(cur)) {
+      if (cur === 7) retryPin();
+      else if (cur === 8 || cur === 10) retryCard();
+      else if (cur === 9) retryConnection();
+      return;
+    }
+    cobrar();
+  }
+
+  function actionCancel() {
+    if (mode !== 'interactive') return;
+    resetAll();
+  }
+
   // ===== COBRAR =====
   function cobrar() {
     if (currentAmount <= 0) return;
@@ -1156,6 +1203,7 @@
       setLcd('ERROR LECTURA', 'REINTENTE', 'lcd-red');
       setStatus('Error de lectura', 'ms-error');
       go(8);
+      disableNumpad(false);
       return;
     }
 
@@ -1163,6 +1211,7 @@
       setLcd('RECHAZO:', 'FIRMA', 'lcd-red');
       setStatus('Rechazo por firma', 'ms-error');
       go(10);
+      disableNumpad(false);
       return;
     }
 
@@ -1178,6 +1227,7 @@
           setLcd('ERROR RED', 'TIMEOUT', 'lcd-orange');
           setStatus('Error de conexión', 'ms-error');
           go(9);
+          disableNumpad(false);
           return;
         }
 
@@ -1230,6 +1280,7 @@
         setLcd('ERROR', 'PIN INCORRECTO', 'lcd-red');
         setStatus('PIN incorrecto', 'ms-error');
         go(7);
+        disableNumpad(false);
       } else {
         showSuccess();
       }
