@@ -264,6 +264,10 @@
       0% { transform: scale(0); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
+    @keyframes pinPulse {
+      0%,100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
 
     /* ===== PIN ===== */
     .pin-a {
@@ -596,23 +600,38 @@
       <div class="mhdr">
         <span class="mhdr-t">Código de verificación</span>
       </div>
-      <div class="pin-a">
-        <div style="font-size:13px; color:var(--gray); font-weight:500;">Ingrese su PIN</div>
+      <div class="pin-a" style="justify-content:center; align-items:center; gap:16px; padding:20px;">
         <div class="pb">
           <div class="px on"></div>
           <div class="px on"></div>
           <div class="px"></div>
           <div class="px"></div>
         </div>
-        <div class="np">
-          <button class="nk">1</button><button class="nk">2</button><button class="nk">3</button>
-          <button class="nk">4</button><button class="nk">5</button><button class="nk">6</button>
-          <button class="nk">7</button><button class="nk">8</button><button class="nk">9</button>
-          <button class="nk nk-e"></button><button class="nk">0</button><button class="nk nk-d">⌫</button>
+        <div style="width:100px; height:100px; border-radius:50%; background:rgba(0,131,128,0.08); display:flex; align-items:center; justify-content:center;">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="2" width="14" height="20" rx="2" stroke="var(--teal)" stroke-width="1.5" fill="none"/>
+            <rect x="8" y="14" width="2" height="2" rx="0.5" fill="var(--teal)" opacity="0.6"/>
+            <rect x="11" y="14" width="2" height="2" rx="0.5" fill="var(--teal)" opacity="0.6"/>
+            <rect x="14" y="14" width="2" height="2" rx="0.5" fill="var(--teal)" opacity="0.6"/>
+            <rect x="8" y="17" width="2" height="2" rx="0.5" fill="var(--teal)" opacity="0.6"/>
+            <rect x="11" y="17" width="2" height="2" rx="0.5" fill="var(--teal)" opacity="0.6"/>
+            <rect x="14" y="17" width="2" height="2" rx="0.5" fill="var(--teal)" opacity="0.6"/>
+            <rect x="7" y="4" width="10" height="8" rx="1" fill="rgba(0,131,128,0.1)" stroke="var(--teal)" stroke-width="0.8"/>
+            <path d="M3 12l-1.5 1.5M3 12l1.5 1.5M3 12h4" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 12l1.5 1.5M21 12l-1.5 1.5M21 12h-4" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
-      </div>
-      <div class="pf">
-        <button class="btn btn-t">Validar</button>
+        <div style="font-size:17px; font-weight:800; color:var(--black); text-align:center; line-height:1.4;">
+          Voltee el dispositivo
+        </div>
+        <div style="font-size:13px; color:var(--gray); font-weight:500; text-align:center; line-height:1.5; max-width:220px;">
+          Ingrese su PIN de 4 dígitos<br>en el teclado posterior
+        </div>
+        <div style="display:flex; gap:6px; margin-top:4px;">
+          <div style="width:8px; height:8px; border-radius:50%; background:var(--teal); animation:pinPulse 1.4s ease-in-out infinite;"></div>
+          <div style="width:8px; height:8px; border-radius:50%; background:var(--teal); opacity:0.4; animation:pinPulse 1.4s ease-in-out 0.2s infinite;"></div>
+          <div style="width:8px; height:8px; border-radius:50%; background:var(--teal); opacity:0.2; animation:pinPulse 1.4s ease-in-out 0.4s infinite;"></div>
+        </div>
       </div>
     </div>
   </div>
