@@ -418,7 +418,7 @@
     @keyframes sp { to { transform: rotate(360deg); } }
 
     .ok {
-      position: absolute; inset: 0; background: var(--green);
+      position: absolute; inset: 0; background: #00A09D;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; z-index: 10;
     }
     .ok-chk {
@@ -852,8 +852,44 @@
         </div>
       </div>
 
-      <!-- E8: PIN INCORRECTO -->
-      <div class="scr" data-s="7">
+      <!-- E8: LOGO VISA — pantalla blanca con logo Visa -->
+      <div class="scr" data-s="11">
+        <div class="bd" style="gap:0; background:var(--white);">
+          <img src="Recursos/Visa.svg" alt="Visa" style="max-width:160px; max-height:100px; object-fit:contain;">
+        </div>
+      </div>
+
+      <!-- E9: LOGO MASTERCARD — pantalla blanca con logo Mastercard -->
+      <div class="scr" data-s="14">
+        <div class="bd" style="gap:0; background:var(--white);">
+          <img src="Recursos/Mastercard.png" alt="Mastercard" style="max-width:160px; max-height:100px; object-fit:contain;">
+        </div>
+      </div>
+
+      <!-- E10: VOUCHER TARJETA — pantalla final con voucher -->
+      <div class="scr" data-s="12">
+        <div class="bd" style="padding:0; overflow-y:auto; background:var(--white);">
+          <img src="Recursos/Vouchers.svg" alt="Voucher" style="width:100%; height:100%; object-fit:contain;">
+        </div>
+      </div>
+
+      <!-- E10: ERROR QR — No se generó el código -->
+      <div class="scr" data-s="13">
+        <div class="acc"></div>
+        <div class="bd" style="gap:14px;">
+          <img src="Recursos/errorQR.svg" alt="Error QR" style="width:200px; height:auto;">
+          <div style="font-size:20px; font-weight:800; color:var(--err); text-align:center; line-height:1.35;">El código no se generó.</div>
+          <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Por favor, inténtalo de nuevo.</div>
+        </div>
+        <div class="ft-hint">
+          <span class="hint-key hint-green">✓</span> Reintentar
+          <span style="margin:0 6px; color:var(--gray);">|</span>
+          <span class="hint-key hint-red">✕</span> Cancelar
+        </div>
+      </div>
+
+      <!-- E11: PIN INCORRECTO -->
+      <div class="scr" data-s="7"> 
         <div class="acc"></div>
         <div class="bd" style="gap:14px;">
           <div class="ic ic-r">
@@ -1022,6 +1058,21 @@
         </div>
       </button>
     </div>
+
+    <!-- QR errors -->
+    <div class="sp-group" id="spQrErrorGroup">
+      <div class="sp-group-label">Errores de QR</div>
+
+      <button class="sp-btn" onclick="runScenario('qr-error')">
+        <div class="sp-icon sp-icon-red">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D32F2F" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><line x1="14" y1="14" x2="20" y2="20"/><line x1="20" y1="14" x2="14" y2="20"/></svg>
+        </div>
+        <div class="sp-text">
+          <div class="sp-name">Error generación QR</div>
+          <div class="sp-desc">El código no se generó</div>
+        </div>
+      </button>
+    </div>
   </div>
 
 </div><!-- /sim-layout -->
@@ -1034,11 +1085,15 @@
   <div class="sc-info" data-l="3"><div class="sc-t">4 — Procesando (Paso 1)</div><div class="sc-d">Logo Izipay gris. Pantalla limpia.</div></div>
   <div class="sc-info" data-l="4"><div class="sc-t">5 — Procesando (Paso 2)</div><div class="sc-d">Spinner teal + mensaje de validación.</div></div>
   <div class="sc-info" data-l="5"><div class="sc-t">6 — Solicitud de PIN</div><div class="sc-d">Monto > S/ 80. Voltee el POS e ingrese PIN en teclado posterior.</div></div>
-  <div class="sc-info" data-l="6"><div class="sc-t">7 — Éxito Total</div><div class="sc-d">Verde full. Check + RECIBIDO.</div></div>
-  <div class="sc-info" data-l="7"><div class="sc-t">8 — PIN Incorrecto</div><div class="sc-d">X roja + reintentar.</div></div>
-  <div class="sc-info" data-l="8"><div class="sc-t">9 — Tarjeta No Leída</div><div class="sc-d">Error de chip. Limpie o use otra tarjeta.</div></div>
-  <div class="sc-info" data-l="9"><div class="sc-t">10 — Error de Conectividad</div><div class="sc-d">Falla de red. No se realizó el cobro.</div></div>
-  <div class="sc-info" data-l="10"><div class="sc-t">11 — Rechazo por Firma</div><div class="sc-d">Terminal no acepta firmas.</div></div>
+  <div class="sc-info" data-l="6"><div class="sc-t">7 — Éxito QR</div><div class="sc-d">Turquesa Izipay. Check + RECIBIDO (solo QR).</div></div>
+  <div class="sc-info" data-l="7"><div class="sc-t">8 — Logo Visa</div><div class="sc-d">Pantalla blanca con logo Visa.</div></div>
+  <div class="sc-info" data-l="8"><div class="sc-t">9 — Logo Mastercard</div><div class="sc-d">Pantalla blanca con logo Mastercard.</div></div>
+  <div class="sc-info" data-l="9"><div class="sc-t">10 — Voucher Tarjeta</div><div class="sc-d">Comprobante final de la transacción con tarjeta.</div></div>
+  <div class="sc-info" data-l="10"><div class="sc-t">11 — Error QR</div><div class="sc-d">El código no se generó. Reintentar.</div></div>
+  <div class="sc-info" data-l="11"><div class="sc-t">12 — PIN Incorrecto</div><div class="sc-d">X roja + reintentar.</div></div>
+  <div class="sc-info" data-l="12"><div class="sc-t">13 — Tarjeta No Leída</div><div class="sc-d">Error de chip. Limpie o use otra tarjeta.</div></div>
+  <div class="sc-info" data-l="13"><div class="sc-t">14 — Error de Conectividad</div><div class="sc-d">Falla de red. No se realizó el cobro.</div></div>
+  <div class="sc-info" data-l="14"><div class="sc-t">15 — Rechazo por Firma</div><div class="sc-d">Terminal no acepta firmas.</div></div>
 </div>
 
 <nav class="nav" id="nav"></nav>
@@ -1058,8 +1113,9 @@
   const L = [
     '1: QR Idle','2: QR < 2501','3: > 2501',
     '4: Proc. 1','5: Proc. 2','6: PIN',
-    '7: Éxito','8: PIN Err','9: Lectura',
-    '10: Red','11: Firma'
+    '7: Éxito QR','8: Visa','9: Mastercard',
+    '10: Voucher','11: Error QR','12: PIN Err',
+    '13: Lectura','14: Red','15: Firma'
   ];
 
   L.forEach((l, i) => {
@@ -1087,6 +1143,8 @@
     if (pinGroup) pinGroup.style.display = currentAmount > 80 ? 'flex' : 'none';
     const qrBtn = document.getElementById('spQrPay');
     if (qrBtn) qrBtn.style.display = currentAmount >= 2501 ? 'none' : 'flex';
+    const qrErrGroup = document.getElementById('spQrErrorGroup');
+    if (qrErrGroup) qrErrGroup.style.display = currentAmount >= 2501 ? 'none' : 'flex';
     const nfcDesc = document.getElementById('spNfcDesc');
     if (nfcDesc) nfcDesc.textContent = currentAmount > 80
       ? 'NFC + PIN (monto > S/ 80)'
@@ -1161,15 +1219,16 @@
   }
 
   // ===== ACTION WRAPPERS (merchant ✓ / ✕) =====
-  const errorScreens = [7, 8, 9, 10]; // PIN err, card read, network, signature
+  const errorScreens = [10, 11, 12, 13, 14]; // QR err, PIN err, card read, network, signature
 
   function actionConfirm() {
     if (mode !== 'interactive') return;
     if (pinMode) return;
     if (errorScreens.includes(cur)) {
-      if (cur === 7) retryPin();
-      else if (cur === 8 || cur === 10) retryCard();
-      else if (cur === 9) retryConnection();
+      if (cur === 10) retryQr();
+      else if (cur === 11) retryPin();
+      else if (cur === 12 || cur === 14) retryCard();
+      else if (cur === 13) retryConnection();
       return;
     }
     cobrar();
@@ -1230,7 +1289,7 @@
             go(5);
             enterPinMode();
           } else {
-            showSuccess();
+            showCardSuccess();
           }
         }, 1800);
       }, 1500);
@@ -1251,10 +1310,21 @@
       return;
     }
 
+    if (type === 'qr-error') {
+      setLcd('ERROR', 'QR NO GENERADO', 'lcd-red');
+      setStatus('Error generación QR', 'ms-error');
+      go(3);
+      activeTimeout = setTimeout(() => {
+        go(10);
+        disableNumpad(false);
+      }, 1500);
+      return;
+    }
+
     if (type === 'card-unread') {
       setLcd('ERROR LECTURA', 'REINTENTE', 'lcd-red');
       setStatus('Error de lectura', 'ms-error');
-      go(8);
+      go(12);
       disableNumpad(false);
       return;
     }
@@ -1262,7 +1332,7 @@
     if (type === 'card-signature') {
       setLcd('RECHAZO:', 'FIRMA', 'lcd-red');
       setStatus('Rechazo por firma', 'ms-error');
-      go(10);
+      go(14);
       disableNumpad(false);
       return;
     }
@@ -1278,13 +1348,13 @@
         if (type === 'network-error') {
           setLcd('ERROR RED', 'TIMEOUT', 'lcd-orange');
           setStatus('Error de conexión', 'ms-error');
-          go(9);
+          go(13);
           disableNumpad(false);
           return;
         }
 
         if (type === 'success-nopin' || currentAmount <= 80) {
-          showSuccess();
+          showCardSuccess();
           return;
         }
 
@@ -1331,10 +1401,10 @@
       if (pendingScenario === 'pin-wrong') {
         setLcd('ERROR', 'PIN INCORRECTO', 'lcd-red');
         setStatus('PIN incorrecto', 'ms-error');
-        go(7);
+        go(11);
         disableNumpad(false);
       } else {
-        showSuccess();
+        showCardSuccess();
       }
     }, 2000);
   }
@@ -1368,10 +1438,34 @@
     enableRetryPanel();
   }
 
+  function retryQr() {
+    setLcd('S/ ' + formatAmount(currentAmount), 'ESPERANDO...', 'lcd-green');
+    setStatus('Esperando pago', 'ms-waiting');
+    go(1);
+    enableRetryPanel();
+  }
+
+  function randomCardBrand() {
+    return Math.random() < 0.5 ? 'visa' : 'mastercard';
+  }
+
   function showSuccess() {
     setLcd('APROBADO', 'S/ ' + formatAmount(currentAmount), 'lcd-green');
     setStatus('Cobro exitoso', 'ms-success');
     go(6);
+  }
+
+  function showCardSuccess() {
+    setLcd('APROBADO', 'S/ ' + formatAmount(currentAmount), 'lcd-green');
+    setStatus('Procesando tarjeta', 'ms-processing');
+
+    const brand = randomCardBrand();
+    go(brand === 'mastercard' ? 8 : 7);
+
+    activeTimeout = setTimeout(() => {
+      setStatus('Cobro exitoso', 'ms-success');
+      go(9);
+    }, 2500);
   }
 
   // ===== MERCHANT LCD =====

@@ -254,7 +254,7 @@
     .ok {
       position: absolute;
       inset: 0;
-      background: var(--green);
+      background: #00A09D;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -652,11 +652,11 @@
 </div>
 
 <!-- ================================================================ -->
-<!-- E7: ÉXITO TOTAL                                                  -->
+<!-- E7: ÉXITO QR                                                     -->
 <!-- ================================================================ -->
 <div class="sc" data-s="6">
-  <div class="sc-t">7 — Éxito Total</div>
-  <div class="sc-d">Verde #28a745 cubriendo los 480px completos. Check gigante + monto 28px.</div>
+  <div class="sc-t">7 — Éxito QR</div>
+  <div class="sc-d">Turquesa Izipay #00A09D cubriendo los 480px completos. Check gigante + monto 28px.</div>
   <div class="devs">
     <div class="m">
       <div class="m-l">Merchant 2.09"</div>
@@ -681,10 +681,94 @@
 </div>
 
 <!-- ================================================================ -->
-<!-- E8: PIN INCORRECTO                                               -->
+<!-- E8: LOGO VISA                                                     -->
+<!-- ================================================================ -->
+<div class="sc" data-s="11">
+  <div class="sc-t">8 — Logo Visa</div>
+  <div class="sc-d">Pantalla blanca con logo Visa durante unos segundos.</div>
+  <div class="devs">
+    <div class="m">
+      <div class="m-l">Merchant 2.09"</div>
+      <div class="m-s" style="background:#0a3d0a;"><div class="lcd lgn">APROBADO<br>S/ 150.00</div></div>
+    </div>
+    <div class="c">
+      <div class="bd" style="gap:0; background:var(--white);">
+        <img src="Recursos/Visa.svg" alt="Visa" style="max-width:160px; max-height:100px; object-fit:contain;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- E9: LOGO MASTERCARD                                               -->
+<!-- ================================================================ -->
+<div class="sc" data-s="14">
+  <div class="sc-t">9 — Logo Mastercard</div>
+  <div class="sc-d">Pantalla blanca con logo Mastercard durante unos segundos.</div>
+  <div class="devs">
+    <div class="m">
+      <div class="m-l">Merchant 2.09"</div>
+      <div class="m-s" style="background:#0a3d0a;"><div class="lcd lgn">APROBADO<br>S/ 150.00</div></div>
+    </div>
+    <div class="c">
+      <div class="bd" style="gap:0; background:var(--white);">
+        <img src="Recursos/Mastercard.png" alt="Mastercard" style="max-width:160px; max-height:100px; object-fit:contain;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- E10: VOUCHER TARJETA                                              -->
+<!-- ================================================================ -->
+<div class="sc" data-s="12">
+  <div class="sc-t">10 — Voucher Tarjeta</div>
+  <div class="sc-d">Comprobante final de la transacción con tarjeta.</div>
+  <div class="devs">
+    <div class="m">
+      <div class="m-l">Merchant 2.09"</div>
+      <div class="m-s" style="background:#0a3d0a;"><div class="lcd lgn">APROBADO<br>S/ 150.00</div></div>
+    </div>
+    <div class="c">
+      <div class="bd" style="padding:0; overflow-y:auto; background:var(--white);">
+        <img src="Recursos/Vouchers.svg" alt="Voucher" style="width:100%; height:100%; object-fit:contain;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- E10: ERROR QR                                                     -->
+<!-- ================================================================ -->
+<div class="sc" data-s="13">
+  <div class="sc-t">11 — Error QR</div>
+  <div class="sc-d">El código QR no se generó. Ilustración de error + mensaje de reintento.</div>
+  <div class="devs">
+    <div class="m">
+      <div class="m-l">Merchant 2.09"</div>
+      <div class="m-s"><div class="lcd lr">ERROR<br>QR NO GENERADO</div></div>
+    </div>
+    <div class="c">
+      <div class="accent"></div>
+      <div class="bd" style="gap:14px;">
+        <img src="Recursos/errorQR.svg" alt="Error QR" style="width:200px; height:auto;">
+        <div style="font-size:20px; font-weight:800; color:var(--err); text-align:center; line-height:1.35;">El código no se generó.</div>
+        <div style="font-size:14px; color:var(--gray-dark); text-align:center; line-height:1.5;">Por favor, inténtalo de nuevo.</div>
+      </div>
+      <div class="ft-hint">
+        <span class="hint-key hint-green">✓</span> Reintentar
+        <span style="margin:0 6px; color:var(--gray);">|</span>
+        <span class="hint-key hint-red">✕</span> Cancelar
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- E11: PIN INCORRECTO                                              -->
 <!-- ================================================================ -->
 <div class="sc" data-s="7">
-  <div class="sc-t">8 — PIN Incorrecto</div>
+  <div class="sc-t">12 — PIN Incorrecto</div>
   <div class="sc-d">X roja + mensaje + botón teal reintentar.</div>
   <div class="devs">
     <div class="m">
@@ -715,7 +799,7 @@
 <!-- E9: TARJETA NO LEÍDA                                             -->
 <!-- ================================================================ -->
 <div class="sc" data-s="8">
-  <div class="sc-t">9 — Tarjeta No Leída / Chip Erróneo</div>
+  <div class="sc-t">13 — Tarjeta No Leída / Chip Erróneo</div>
   <div class="sc-d">Gráfico de tarjeta con advertencia. Instrucción de limpieza.</div>
   <div class="devs">
     <div class="m">
@@ -749,7 +833,7 @@
 <!-- E10: ERROR DE CONECTIVIDAD                                       -->
 <!-- ================================================================ -->
 <div class="sc" data-s="9">
-  <div class="sc-t">10 — Error de Conectividad</div>
+  <div class="sc-t">14 — Error de Conectividad</div>
   <div class="sc-d">Falla de 4G/WiFi o timeout. Icono naranja + instrucción de señal.</div>
   <div class="devs">
     <div class="m">
@@ -781,7 +865,7 @@
 <!-- E11: RECHAZO POR FIRMA                                           -->
 <!-- ================================================================ -->
 <div class="sc" data-s="10">
-  <div class="sc-t">11 — Rechazo por Firma</div>
+  <div class="sc-t">15 — Rechazo por Firma</div>
   <div class="sc-d">Terminal no acepta firmas. Icono prohibido + instrucción alternativa.</div>
   <div class="devs">
     <div class="m">
@@ -816,8 +900,9 @@
   const L = [
     '1: QR Idle','2: QR < 2500','3: Tarjeta > 2500',
     '4: Proc. 1','5: Proc. 2','6: PIN',
-    '7: Éxito','8: PIN Error','9: Lectura',
-    '10: Red','11: Firma'
+    '7: Éxito QR','8: Visa','9: Mastercard',
+    '10: Voucher','11: Error QR','12: PIN Error',
+    '13: Lectura','14: Red','15: Firma'
   ];
 
   const S = document.querySelectorAll('.sc');
