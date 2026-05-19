@@ -1,0 +1,266 @@
+
+<h2 class="sr-only">Simulador interactivo de flujos del POS Aisino — navega cada escenario de venta y configuración con visualización de ambas pantallas, LEDs, botones y audio</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.pos{padding:4px 0;color:var(--color-text-primary);font-size:14px}
+.chips-wrap{margin-bottom:14px;display:flex;flex-direction:column;gap:6px}
+.g-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.g-lbl{font-size:11px;color:var(--color-text-tertiary);min-width:88px;flex-shrink:0;padding-top:2px}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{padding:4px 11px;border-radius:16px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);font-size:12px;cursor:pointer;transition:all .15s;color:var(--color-text-secondary)}
+.chip:hover:not(.active){border-color:var(--color-border-primary);color:var(--color-text-primary)}
+.chip.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:transparent}
+.device-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.sc-wrap{flex:0 0 auto}
+.sc-label{font-size:11px;color:var(--color-text-tertiary);margin-bottom:6px;letter-spacing:.03em}
+.cust-screen{width:186px;height:268px;background:#111827;border-radius:10px;border:2px solid #2d3748;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.merch-screen{width:150px;height:52px;background:#060f06;border-radius:4px;border:1.5px solid #0d1f0d;padding:7px 9px;font-family:'Courier New',monospace;font-size:12px;color:#33dd33;line-height:1.5;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.m-line{white-space:pre;overflow:hidden;width:16ch;text-align:center}
+.inds{display:flex;flex-direction:column;gap:9px;margin-top:10px}
+.led-row{display:flex;gap:10px;align-items:center}
+.led-item{display:flex;align-items:center;gap:5px}
+.led{width:9px;height:9px;border-radius:50%;background:#2d3748;transition:background .4s,box-shadow .4s}
+.led.g{background:#22c55e;box-shadow:0 0 6px #22c55e88}
+.led.r{background:#ef4444;box-shadow:0 0 6px #ef444488}
+.led.o{background:#f97316;box-shadow:0 0 6px #f9731688}
+.led-lbl{font-size:11px;color:var(--color-text-tertiary)}
+.aud-ind{font-size:11px;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:6px;padding:6px 8px;background:var(--color-background-secondary);display:flex;align-items:flex-start;gap:5px;line-height:1.4;min-height:32px;width:150px}
+.aud-ind i{margin-top:1px;font-size:13px;opacity:.6;flex-shrink:0}
+.to-ind{font-size:11px;color:var(--color-text-tertiary);display:flex;align-items:center;gap:4px;width:150px}
+.step-sec{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.step-num{font-size:11px;color:var(--color-text-tertiary)}
+.step-act{font-size:13px;font-weight:500;color:var(--color-text-primary);line-height:1.5}
+.btns{display:flex;flex-wrap:wrap;gap:5px}
+.b{padding:3px 10px;border-radius:4px;border:0.5px solid var(--color-border-secondary);font-size:12px;color:var(--color-text-secondary);background:var(--color-background-primary)}
+.bg{border-color:#22c55e;color:#16a34a;background:transparent}
+.br{border-color:#ef4444;color:#ef4444;background:transparent}
+.bn{border-color:#6366f1;color:#818cf8;background:transparent}
+.step-note{font-size:12px;color:var(--color-text-tertiary);line-height:1.5;border-left:2px solid var(--color-border-secondary);padding-left:9px;margin-top:2px}
+.nav{display:flex;align-items:center;gap:10px;padding-top:2px}
+.nav-b{padding:5px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);cursor:pointer;font-size:13px;color:var(--color-text-primary);transition:all .15s}
+.nav-b:hover:not(:disabled){border-color:var(--color-border-primary);background:var(--color-background-secondary)}
+.nav-b:disabled{opacity:.35;cursor:default}
+.dots{display:flex;gap:5px;flex:1;justify-content:center;flex-wrap:wrap;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer;transition:all .2s;flex-shrink:0}
+.dot.act{background:var(--color-text-primary);width:16px;border-radius:4px}
+.dot.dn{background:var(--color-border-primary)}
+.auto-lbl{font-size:12px;color:var(--color-text-tertiary);font-style:italic}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+
+<div class="pos">
+  <div id="chips-area" class="chips-wrap"></div>
+  <div class="device-row">
+    <div class="sc-wrap">
+      <div class="sc-label">Pantalla customer (3.5")</div>
+      <div class="cust-screen" id="cust"></div>
+    </div>
+    <div class="sc-wrap">
+      <div class="sc-label">Pantalla merchant (2.09")</div>
+      <div class="merch-screen">
+        <div class="m-line" id="mt" style="font-weight:bold;color:#44ee44"></div>
+        <div class="m-line" id="mb" style="color:#22aa22;font-size:11px"></div>
+      </div>
+      <div class="inds">
+        <div class="led-row">
+          <div class="led-item"><div class="led" id="lpwr"></div><span class="led-lbl">Encendido</span></div>
+          <div class="led-item"><div class="led" id="lst"></div><span class="led-lbl">Estado</span></div>
+        </div>
+        <div class="aud-ind"><i class="ti ti-volume-off" id="aud-icon"></i><span id="aud-t">Sin audio</span></div>
+        <div class="to-ind" id="toi" style="display:none"><i class="ti ti-clock" style="font-size:13px"></i><span id="to-t"></span></div>
+      </div>
+    </div>
+    <div class="step-sec">
+      <div class="step-num" id="snum"></div>
+      <div class="step-act" id="sact"></div>
+      <div class="btns" id="sbts"></div>
+      <div id="snote"></div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-b" id="pb" onclick="nav(-1)">← Anterior</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-b" id="nb" onclick="nav(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const QR_PAT=[
+[1,1,1,1,1,1,1,0,0,1,0,1,1,1,1,1,1],
+[1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1],
+[1,0,1,1,1,0,1,0,0,1,1,0,1,1,1,0,1],
+[1,0,1,1,1,0,1,0,1,0,1,0,1,1,1,0,1],
+[1,0,1,1,1,0,1,0,0,1,0,0,1,1,1,0,1],
+[1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1],
+[1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1],
+[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+[1,0,1,0,1,1,1,1,0,1,0,0,1,0,1,0,0],
+[0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,1],
+[1,0,1,1,1,0,1,0,1,1,0,1,0,0,1,0,1],
+[0,1,0,0,0,1,0,0,0,0,1,0,1,1,0,1,0],
+[1,0,1,0,1,0,1,1,1,0,0,1,1,0,1,0,1],
+[0,0,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0],
+[1,1,1,1,1,1,1,0,0,0,1,0,1,1,1,0,1],
+[1,0,0,0,0,0,1,0,1,0,0,1,0,0,0,1,0],
+[1,0,1,1,1,0,1,0,0,1,1,0,1,0,1,0,1]];
+
+function qrSVG(fg,sz){
+  const c=sz/17;let rs='';
+  for(let r=0;r<17;r++)for(let cc=0;cc<17;cc++)if(QR_PAT[r][cc])rs+=`<rect x="${+(cc*c).toFixed(1)}" y="${+(r*c).toFixed(1)}" width="${+c.toFixed(1)}" height="${+c.toFixed(1)}" fill="${fg}"/>`;
+  return `<svg viewBox="0 0 ${sz} ${sz}" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg">${rs}</svg>`;
+}
+
+function custHTML(s,d){
+  d=d||{};
+  if(s==='off') return `<div style="width:100%;height:100%;background:#000"></div>`;
+  if(s==='boot') return `<div style="width:100%;height:100%;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px"><div style="font-size:26px;font-weight:800;color:#38bdf8;letter-spacing:.12em">IZIPAY</div><div style="width:64px;height:3px;background:#1e3a5f;border-radius:2px;overflow:hidden"><div style="height:100%;width:55%;background:#38bdf8;animation:blink 1.2s ease-in-out infinite"></div></div><div style="font-size:10px;color:#475569">Iniciando sistema...</div></div>`;
+  if(s==='qr_static') return `<div style="width:100%;height:100%;background:#1e2a4a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px"><div style="background:white;padding:6px;border-radius:6px">${qrSVG('#1e2a4a',88)}</div><div style="font-size:11px;color:#94a3b8">QR Estático</div><div style="font-size:10px;color:#4b5d7a">Escanea para pagar</div></div>`;
+  if(s==='qr_dynamic') return `<div style="width:100%;height:100%;background:#1a2740;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px"><div style="font-size:11px;color:#94a3b8">Monto a pagar</div><div style="font-size:22px;font-weight:700;color:#fff">S/ 00.00</div><div style="background:white;padding:5px;border-radius:5px">${qrSVG('#1a2740',80)}</div><div style="font-size:10px;color:#4b5d7a">QR Dinámico • Escanear</div></div>`;
+  if(s==='processing') return `<div style="width:100%;height:100%;background:#0f172a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px"><div style="width:46px;height:46px;border:3px solid #1e3a5f;border-top-color:#38bdf8;border-radius:50%;animation:spin 1s linear infinite"></div><div style="font-size:13px;color:#94a3b8;animation:pulse 1.5s ease-in-out infinite">Procesando...</div><div style="font-size:10px;color:#334155">Máx. 120 segundos</div></div>`;
+  if(s==='pin') return `<div style="width:100%;height:100%;background:#1a1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px"><div style="font-size:12px;color:#94a3b8">Ingresa tu PIN</div><div style="display:flex;gap:14px">${[0,1,2,3].map(i=>`<div style="width:16px;height:16px;border-radius:50%;border:2px solid #6366f1;background:${i===0?'#6366f1':'transparent'}"></div>`).join('')}</div><div style="font-size:10px;color:#374151">4 dígitos requeridos</div></div>`;
+  if(s==='visa') return `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="font-size:42px;font-weight:900;font-style:italic;color:#1a1f71;letter-spacing:-.02em">VISA</div><div style="font-size:11px;color:#999">Transacción aprobada</div></div>`;
+  if(s==='mc') return `<div style="width:100%;height:100%;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"><div style="position:relative;width:68px;height:44px"><div style="position:absolute;left:0;top:0;width:44px;height:44px;border-radius:50%;background:#eb001b"></div><div style="position:absolute;right:0;top:0;width:44px;height:44px;border-radius:50%;background:#f79e1b;opacity:.85"></div></div><div style="font-size:10px;color:#888;letter-spacing:.1em">MASTERCARD</div></div>`;
+  if(s==='success') return `<div style="width:100%;height:100%;background:#052e16;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"><div style="width:52px;height:52px;border-radius:50%;background:#16a34a;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div style="font-size:14px;font-weight:600;color:#4ade80">Transacción exitosa</div><div style="font-size:11px;color:#166534">Pago aprobado</div></div>`;
+  if(s==='card_only') return `<div style="width:100%;height:100%;background:#1c1917;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"><svg width="60" height="44" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="58" height="42" rx="6" stroke="#a8a29e" stroke-width="1.5"/><rect x="1" y="11" width="58" height="10" fill="#a8a29e" opacity=".25"/><rect x="10" y="28" width="22" height="6" rx="2" fill="#a8a29e" opacity=".4"/></svg><div style="font-size:13px;color:#a8a29e">Solo tarjeta</div><div style="font-size:10px;color:#57534e;text-align:center;line-height:1.6">Acerque (NFC) o inserte<br>su tarjeta</div></div>`;
+  if(s==='voucher') return `<div style="width:100%;height:100%;background:#fafafa;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:14px 16px;gap:2px;overflow:hidden"><div style="font-size:13px;font-weight:700;color:#111;width:100%;text-align:center;margin-bottom:8px;border-bottom:1px dashed #ccc;padding-bottom:6px">IZIPAY</div>${['COMERCIO: TIENDA SA','FECHA: 01/05/2026','HORA: 10:30:22','──────────────','OPERACIÓN: VENTA','MONTO: S/ 00.00','ESTADO: APROBADO','──────────────','VISA  **** 1234','AUTOR: 123456'].map(l=>`<div style="font-size:9px;font-family:'Courier New',monospace;color:#333;width:100%">${l}</div>`).join('')}<div style="font-size:9px;color:#888;width:100%;text-align:center;margin-top:8px;border-top:1px dashed #ccc;padding-top:6px">Gracias por su compra</div></div>`;
+  if(s==='send_voucher') return `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px"><svg width="38" height="38" viewBox="0 0 24 24" fill="none"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:12px;color:#333;text-align:center;line-height:1.6">Enviar voucher por SMS<br>Ingrese número</div></div>`;
+  if(s==='sent') return `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"><svg width="38" height="38" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:13px;color:#15803d">Voucher enviado</div></div>`;
+  if(s==='err_pin') return `<div style="width:100%;height:100%;background:#450a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"><svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" stroke="#ef4444" stroke-width="2"/><path d="M22 14v11M22 29v3" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/></svg><div style="font-size:13px;color:#f87171">Clave incorrecta</div><div style="font-size:11px;color:#7f1d1d;text-align:center;line-height:1.5">Reintente o cancele<br>la operación</div></div>`;
+  if(s==='err') return `<div style="width:100%;height:100%;background:#450a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px"><svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" stroke="#ef4444" stroke-width="2"/><path d="M15 15l14 14M29 15L15 29" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/></svg><div style="font-size:13px;color:#f87171">${d.msg||'Error'}</div><div style="font-size:11px;color:#7f1d1d">Reintentar o cancelar</div></div>`;
+  return `<div style="width:100%;height:100%;background:#111827;display:flex;align-items:center;justify-content:center"><div style="font-size:12px;color:#374151">${s}</div></div>`;
+}
+
+const FLOWS=[
+  {id:'qr_st',name:'QR estático',group:'Ventas',steps:[
+    {n:1,act:'Operador presiona el botón verde. El dispositivo muestra el QR estático listo para escanear',btns:[{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:null,lpwr:'g',lst:null,to:'20s sin acción → regresa',note:'Pantalla default al encender. El cliente escanea directamente desde su app bancaria sin ingresar monto.'},
+    {n:2,act:'Pago recibido. El altavoz confirma la transacción con el monto cobrado',btns:[],cust:'success',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:'Se ha recibido x soles. Izipay',lpwr:'g',lst:'g',to:null,note:'La pantalla regresa al QR estático automáticamente para la siguiente venta.'},
+  ]},
+  {id:'qr_dyn',name:'QR dinámico',group:'Ventas',steps:[
+    {n:1,act:'Operador presiona el botón verde',btns:[{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:null,lpwr:'g',lst:null,to:'20s sin acción',note:null},
+    {n:2,act:'Operador ingresa el monto con el teclado. El monto se refleja en el cuerpo de la pantalla merchant. Presiona verde para confirmar',btns:[{l:'0–9 Teclado',c:'n'},{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'00.00',aud:null,lpwr:'g',lst:null,to:null,note:'Cada dígito actualiza el cuerpo de la pantalla merchant en tiempo real.'},
+    {n:3,act:'Se genera QR dinámico con el monto ingresado. El cliente escanea desde su app',btns:[],cust:'qr_dynamic',mt:'Monto a pagar',mb:'00.00 soles',aud:null,lpwr:'g',lst:null,to:'20s → QR expira',note:null},
+    {n:4,act:'Pago confirmado. Voucher en pantalla y audio de confirmación',btns:[],cust:'voucher',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:'Se ha recibido x soles. Izipay',lpwr:'g',lst:'g',to:'3s → pantalla default',note:null},
+    {n:5,act:'(Opcional) Operador presiona "0" durante el voucher para enviar comprobante por SMS',btns:[{l:'"0"',c:'n'}],cust:'send_voucher',mt:'Envía voucher',mb:'',aud:null,lpwr:'g',lst:'g',to:'Solo disponible 3s',note:'Esta opción solo está disponible mientras la pantalla de voucher esté activa.'},
+    {n:6,act:'Operador ingresa el número de teléfono del cliente y presiona verde',btns:[{l:'0–9 Teclado',c:'n'},{l:'Verde (●)',c:'g'}],cust:'sent',mt:'Enviado',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:null,note:null},
+  ]},
+  {id:'card_no_pin',name:'Tarjeta sin PIN (<80 S/)',group:'Ventas',steps:[
+    {n:1,act:'Operador presiona el botón verde',btns:[{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:null,lpwr:'g',lst:null,to:'20s sin acción',note:null},
+    {n:2,act:'Operador ingresa el monto (<80 S/) y presiona verde',btns:[{l:'0–9 Teclado',c:'n'},{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'00.00',aud:null,lpwr:'g',lst:null,to:null,note:'Montos menores a 80 soles no requieren PIN.'},
+    {n:3,act:'QR dinámico activo. El cliente acerca o inserta su tarjeta',btns:[],cust:'qr_dynamic',mt:'Monto a pagar',mb:'00.00 soles',aud:null,lpwr:'g',lst:null,to:'20s',note:'Acepta NFC (acercar) o inserción de tarjeta física.'},
+    {n:4,act:'Tarjeta leída. Procesando transacción',btns:[],cust:'processing',mt:'Procesando',mb:'Transacción',aud:null,lpwr:'g',lst:'o',to:'Máx. 120s',note:'LED de estado en naranja mientras espera respuesta del autorizador.'},
+    {n:5,act:'Transacción aprobada. Branding de la red (Visa/MC) se muestra 2 segundos',btns:[],cust:'visa',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:'Sonido sensory brand Visa/MC',lpwr:'g',lst:'g',to:'2s → siguiente',note:'LED de estado pasa a verde.'},
+    {n:6,act:'Pantalla de transacción exitosa (2 segundos)',btns:[],cust:'success',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:'2s → voucher',note:null},
+    {n:7,act:'Voucher en pantalla customer. Audio de confirmación',btns:[],cust:'voucher',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:'Se ha recibido x soles. Izipay',lpwr:'g',lst:'g',to:'3s → pantalla default',note:null},
+    {n:8,act:'(Opcional) Operador presiona "0" → ingresa número → verde para enviar voucher',btns:[{l:'"0"',c:'n'},{l:'Verde (●)',c:'g'}],cust:'sent',mt:'Enviado',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:null,note:'Opcional. Solo durante los 3s de vida del voucher.'},
+  ]},
+  {id:'card_pin_80',name:'Tarjeta con PIN (>80 S/)',group:'Ventas',steps:[
+    {n:1,act:'Operador presiona el botón verde',btns:[{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:null,lpwr:'g',lst:null,to:'20s sin acción',note:null},
+    {n:2,act:'Operador ingresa el monto (>80 S/) y presiona verde',btns:[{l:'0–9 Teclado',c:'n'},{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'00.00',aud:null,lpwr:'g',lst:null,to:null,note:'Montos mayores a 80 soles requieren PIN del tarjetahabiente.'},
+    {n:3,act:'QR dinámico activo. Cliente acerca o inserta la tarjeta',btns:[],cust:'qr_dynamic',mt:'Monto a pagar',mb:'00.00 soles',aud:null,lpwr:'g',lst:null,to:'20s',note:null},
+    {n:4,act:'Tarjeta leída. Procesando',btns:[],cust:'processing',mt:'Procesando',mb:'Transacción',aud:null,lpwr:'g',lst:'o',to:'Máx. 120s',note:null},
+    {n:5,act:'Dispositivo solicita PIN. El tarjetahabiente ingresa 4 dígitos. En pantalla merchant el cuerpo muestra "#" por cada dígito ingresado',btns:[{l:'0–9 PIN',c:'n'},{l:'Verde (●)',c:'g'}],cust:'pin',mt:'Ingresa PIN',mb:'',aud:null,lpwr:'g',lst:'o',to:'30s sin acción → cancela',note:'Primer dígito: "#" | Segundo: "##" | Tercero: "###" | Cuarto: "####". El último carácter visible se reemplaza al ingresar el siguiente.'},
+    {n:6,act:'PIN validado. Branding de red (2 segundos)',btns:[],cust:'visa',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:'Sonido sensory brand Visa/MC',lpwr:'g',lst:'g',to:'2s → siguiente',note:null},
+    {n:7,act:'Transacción exitosa (2 segundos)',btns:[],cust:'success',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:'2s → voucher',note:null},
+    {n:8,act:'Voucher en pantalla',btns:[],cust:'voucher',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:'Se ha recibido x soles. Izipay',lpwr:'g',lst:'g',to:'3s → pantalla default',note:null},
+    {n:9,act:'(Opcional) Enviar voucher por SMS',btns:[{l:'"0"',c:'n'},{l:'Verde (●)',c:'g'}],cust:'sent',mt:'Enviado',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:null,note:'Opcional.'},
+  ]},
+  {id:'card_pin_2500',name:'Tarjeta con PIN (>2500 S/)',group:'Ventas',steps:[
+    {n:1,act:'Operador presiona el botón verde',btns:[{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:null,lpwr:'g',lst:null,to:'20s sin acción',note:null},
+    {n:2,act:'Operador ingresa el monto (>2500 S/) y presiona verde',btns:[{l:'0–9 Teclado',c:'n'},{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'00.00',aud:null,lpwr:'g',lst:null,to:null,note:'Montos mayores a 2500 soles: el QR se deshabilita. Solo pago con tarjeta física.'},
+    {n:3,act:'QR deshabilitado. Se muestra pantalla "Solo tarjeta". El cliente acerca o inserta su tarjeta',btns:[],cust:'card_only',mt:'Espera de pago',mb:'con tarjeta',aud:null,lpwr:'g',lst:null,to:'20s',note:'El dispositivo solo acepta NFC o inserción de tarjeta para este rango de monto.'},
+    {n:4,act:'Tarjeta leída. Procesando',btns:[],cust:'processing',mt:'Procesando',mb:'Transacción',aud:null,lpwr:'g',lst:'o',to:'Máx. 120s',note:null},
+    {n:5,act:'Solicitud de PIN. Tarjetahabiente ingresa 4 dígitos',btns:[{l:'0–9 PIN',c:'n'},{l:'Verde (●)',c:'g'}],cust:'pin',mt:'Ingresa PIN',mb:'',aud:null,lpwr:'g',lst:'o',to:'30s',note:'Pantalla merchant cuerpo: "#", "##", "###", "####" conforme se ingresan dígitos.'},
+    {n:6,act:'PIN validado. Branding Mastercard (2 segundos)',btns:[],cust:'mc',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:'Sonido sensory brand Visa/MC',lpwr:'g',lst:'g',to:'2s → siguiente',note:null},
+    {n:7,act:'Transacción exitosa',btns:[],cust:'success',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:'2s → voucher',note:null},
+    {n:8,act:'Voucher en pantalla',btns:[],cust:'voucher',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:'Se ha recibido x soles. Izipay',lpwr:'g',lst:'g',to:'3s → pantalla default',note:null},
+    {n:9,act:'(Opcional) Enviar voucher por SMS',btns:[{l:'"0"',c:'n'},{l:'Verde (●)',c:'g'}],cust:'sent',mt:'Enviado',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:null,note:'Opcional.'},
+  ]},
+  {id:'wrong_pin',name:'PIN incorrecto',group:'Ventas',steps:[
+    {n:1,act:'Operador presiona el botón verde',btns:[{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:null,lpwr:'g',lst:null,to:'20s',note:null},
+    {n:2,act:'Operador ingresa el monto y presiona verde',btns:[{l:'0–9 Teclado',c:'n'},{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'00.00',aud:null,lpwr:'g',lst:null,to:null,note:null},
+    {n:3,act:'Cliente acerca o inserta la tarjeta',btns:[],cust:'card_only',mt:'Espera de pago',mb:'con tarjeta',aud:null,lpwr:'g',lst:null,to:'20s',note:null},
+    {n:4,act:'Tarjeta leída. Procesando',btns:[],cust:'processing',mt:'Procesando',mb:'Transacción',aud:null,lpwr:'g',lst:'o',to:'Máx. 120s',note:null},
+    {n:5,act:'Solicitud de PIN. El tarjetahabiente ingresa PIN incorrecto',btns:[{l:'0–9 PIN',c:'n'},{l:'Verde (●)',c:'g'}],cust:'pin',mt:'Ingresa PIN',mb:'####',aud:null,lpwr:'g',lst:'o',to:'30s',note:null},
+    {n:6,act:'PIN rechazado. Error mostrado en pantalla customer. LED de estado en rojo',btns:[],cust:'err_pin',mt:'Reintentar',mb:'Presionar enter',aud:null,lpwr:'g',lst:'r',to:'5s → decisión',note:'Pantalla customer: Clave incorrecta. Pantalla merchant: "Reintentar" / "Presionar enter".'},
+    {n:7,act:'Operador decide si reintentar o cancelar',btns:[{l:'Verde (●) → Reintentar',c:'g'},{l:'"X" → Cancelar',c:'r'}],cust:'err_pin',mt:'Reintentar',mb:'Presionar enter',aud:null,lpwr:'g',lst:'r',to:null,note:'Verde → vuelve al paso de solicitud de PIN. "X" → termina la operación y regresa a pantalla default (QR estático).'},
+  ]},
+  {id:'boot',name:'Encendido',group:'Configuración',steps:[
+    {n:1,act:'Mantener presionado el botón de encendido durante 3 a 5 segundos',btns:[{l:'⏻ Encendido (3–5s)',c:'n'}],cust:'boot',mt:'Encendiendo...',mb:'',aud:'Izipay',lpwr:'g',lst:null,to:null,note:'LED de encendido se activa en verde. El altavoz reproduce el jingle de bienvenida.'},
+    {n:2,act:'Dispositivo busca conexión a la red. Pantalla customer se apaga',btns:[],cust:'off',mt:'Conectando',mb:'',aud:'Registrado en la red móvil',lpwr:'g',lst:'o',to:null,note:'LED de estado en naranja durante la búsqueda de red. Pantalla customer permanece apagada.'},
+    {n:3,act:'Conexión establecida. El dispositivo está listo',btns:[],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:'El servidor está conectado',lpwr:'g',lst:'g',to:null,note:'LED de estado pasa a verde. Pantalla customer muestra QR estático (pantalla default).'},
+  ]},
+  {id:'shutdown',name:'Apagado',group:'Configuración',steps:[
+    {n:1,act:'Mantener presionado el botón de encendido durante 3 a 5 segundos',btns:[{l:'⏻ Encendido (3–5s)',c:'n'}],cust:'off',mt:'Apagando...',mb:'',aud:null,lpwr:'r',lst:null,to:null,note:'LED de encendido cambia a rojo. Las dos pantallas se apagan. El equipo se apaga completamente.'},
+  ]},
+  {id:'last_trxs',name:'Últimas transacciones',group:'Configuración',steps:[
+    {n:1,act:'Presionar botón F1',btns:[{l:'F1',c:'n'}],cust:'off',mt:'Ultimas trxs',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:null,note:'La pantalla customer se apaga durante todo este menú. La pantalla merchant muestra la primera de las últimas 3 transacciones.'},
+    {n:2,act:'Navegar entre las últimas 3 transacciones aprobadas con los botones de flecha',btns:[{l:'⬆ Anterior',c:'n'},{l:'⬇ Siguiente',c:'n'}],cust:'off',mt:'Ultimas trxs',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:null,note:'El cuerpo de la pantalla merchant se actualiza con la hora y monto de cada transacción seleccionada.'},
+    {n:3,act:'Seleccionar transacción presionando verde para ver el voucher',btns:[{l:'Verde (●)',c:'g'}],cust:'voucher',mt:'Trx aprobada',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:null,note:'La pantalla customer muestra el voucher de la transacción seleccionada.'},
+    {n:4,act:'Presionar Fn para volver al listado de últimas transacciones',btns:[{l:'Fn',c:'n'}],cust:'off',mt:'Ultimas trxs',mb:'H:00:00-M:00.00',aud:null,lpwr:'g',lst:'g',to:null,note:'Regresa al paso anterior (navegación de transacciones).'},
+  ]},
+  {id:'wifi',name:'Config. WiFi / SIM',group:'Configuración',steps:[
+    {n:1,act:'Presionar F1 + Fn simultáneamente',btns:[{l:'F1 + Fn',c:'n'}],cust:'off',mt:'Cambiar conexion',mb:'a Wifi',aud:null,lpwr:'g',lst:'o',to:null,note:'Pantalla customer permanece apagada durante todo el flujo. El cuerpo muestra "a Wifi" o "a tarjeta SIM" según la configuración actual.'},
+    {n:2,act:'Presionar verde para confirmar el cambio de conexión',btns:[{l:'Verde (●)',c:'g'}],cust:'off',mt:'Cambiando...',mb:'',aud:'Se cambia de tarjeta SIM a modo Wifi',lpwr:'g',lst:'o',to:null,note:'El mensaje de audio refleja la transición actual (SIM→WiFi o WiFi→SIM).'},
+    {n:3,act:'Dispositivo actualiza la configuración de red',btns:[],cust:'off',mt:'Actualizando...',mb:'',aud:null,lpwr:'g',lst:'o',to:null,note:null},
+    {n:4,act:'Conexión establecida en el nuevo modo',btns:[],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:'Se ha conectado a la red',lpwr:'g',lst:'g',to:null,note:'LED de estado en verde. Pantalla customer regresa al QR estático.'},
+  ]},
+  {id:'vol',name:'Volumen',group:'Configuración',steps:[
+    {n:1,act:'Operador presiona el botón verde para activar el dispositivo',btns:[{l:'Verde (●)',c:'g'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:null,lpwr:'g',lst:'g',to:null,note:null},
+    {n:2,act:'Mantener "+" presionado y luego presionar ⬆ para subir el volumen',btns:[{l:'"+" + ⬆',c:'n'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:'Se sube el volumen / Este es el volumen máximo',lpwr:'g',lst:'g',to:null,note:'Si ya está en nivel máximo, el altavoz indica: "Este es el volumen máximo".'},
+    {n:3,act:'Mantener "+" presionado y luego presionar ⬇ para bajar el volumen',btns:[{l:'"+" + ⬇',c:'n'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:'Se baja el volumen / Este es el volumen mínimo',lpwr:'g',lst:'g',to:null,note:'Si ya está en nivel mínimo, el altavoz indica: "Este es el volumen mínimo".'},
+  ]},
+  {id:'bat',name:'Estado de batería',group:'Configuración',steps:[
+    {n:1,act:'Mantener presionado el botón "+" durante 3 segundos',btns:[{l:'"+" (3s)',c:'n'}],cust:'qr_static',mt:'Ingresar monto',mb:'',aud:'El nivel de la batería es X por ciento',lpwr:'g',lst:'g',to:null,note:'Si la batería está por debajo del 20%, el LED de estado permanece en rojo hasta que se cargue o el equipo se apague automáticamente.'},
+  ]},
+];
+
+let fi=0,si=0;
+
+function ctr(s){const n=Math.max(0,Math.floor((16-s.length)/2));return ' '.repeat(n)+s;}
+
+function render(){
+  const flow=FLOWS[fi],step=flow.steps[si];
+  document.getElementById('cust').innerHTML=custHTML(step.cust,{});
+  document.getElementById('mt').textContent=ctr(step.mt||'');
+  document.getElementById('mb').textContent=ctr(step.mb||'');
+  const lp=document.getElementById('lpwr'),ls=document.getElementById('lst');
+  lp.className='led'+(step.lpwr?' '+step.lpwr:'');
+  ls.className='led'+(step.lst?' '+step.lst:'');
+  const ai=document.getElementById('aud-icon'),at=document.getElementById('aud-t');
+  if(step.aud){ai.className='ti ti-volume';at.textContent=step.aud;}
+  else{ai.className='ti ti-volume-off';at.textContent='Sin audio';}
+  const toi=document.getElementById('toi');
+  if(step.to){toi.style.display='flex';document.getElementById('to-t').textContent=step.to;}
+  else toi.style.display='none';
+  document.getElementById('snum').textContent=`Paso ${si+1} de ${flow.steps.length} — ${flow.name}`;
+  document.getElementById('sact').textContent=step.act;
+  const sbts=document.getElementById('sbts');
+  if(step.btns&&step.btns.length)sbts.innerHTML=step.btns.map(b=>`<div class="b b${b.c}">${b.l}</div>`).join('');
+  else sbts.innerHTML=`<span class="auto-lbl">— transición automática —</span>`;
+  const snote=document.getElementById('snote');
+  snote.innerHTML=step.note?`<div class="step-note">${step.note}</div>`:'';
+  const dots=document.getElementById('dots');
+  dots.innerHTML=flow.steps.map((_,i)=>`<div class="dot${i===si?' act':i<si?' dn':''}" onclick="goStep(${i})"></div>`).join('');
+  document.getElementById('pb').disabled=si===0;
+  document.getElementById('nb').disabled=si===flow.steps.length-1;
+}
+
+function renderChips(){
+  const area=document.getElementById('chips-area');
+  const groups={};
+  FLOWS.forEach((f,i)=>{if(!groups[f.group])groups[f.group]=[];groups[f.group].push({...f,idx:i});});
+  let html='';
+  for(const[g,fs]of Object.entries(groups)){
+    html+=`<div class="g-row"><span class="g-lbl">${g}</span><div class="chips">${fs.map(f=>`<div class="chip${f.idx===fi?' active':''}" onclick="selFlow(${f.idx})">${f.name}</div>`).join('')}</div></div>`;
+  }
+  area.innerHTML=html;
+}
+
+function selFlow(i){fi=i;si=0;renderChips();render();}
+function nav(d){const f=FLOWS[fi];si=Math.max(0,Math.min(f.steps.length-1,si+d));render();}
+function goStep(i){si=i;render();}
+
+renderChips();render();
+</script>

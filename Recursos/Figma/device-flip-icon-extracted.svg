@@ -1,0 +1,21 @@
+<svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Phone outline -->
+  <rect x="5" y="2" width="14" height="20" rx="2" stroke="#008380" stroke-width="1.5" fill="none"/>
+  
+  <!-- Keypad dots (bottom) -->
+  <rect x="8" y="14" width="2" height="2" rx="0.5" fill="#008380" opacity="0.6"/>
+  <rect x="11" y="14" width="2" height="2" rx="0.5" fill="#008380" opacity="0.6"/>
+  <rect x="14" y="14" width="2" height="2" rx="0.5" fill="#008380" opacity="0.6"/>
+  <rect x="8" y="17" width="2" height="2" rx="0.5" fill="#008380" opacity="0.6"/>
+  <rect x="11" y="17" width="2" height="2" rx="0.5" fill="#008380" opacity="0.6"/>
+  <rect x="14" y="17" width="2" height="2" rx="0.5" fill="#008380" opacity="0.6"/>
+  
+  <!-- Screen area (top) -->
+  <rect x="7" y="4" width="10" height="8" rx="1" fill="rgba(0,131,128,0.1)" stroke="#008380" stroke-width="0.8"/>
+  
+  <!-- Left rotation arrows -->
+  <path d="M3 12l-1.5 1.5M3 12l1.5 1.5M3 12h4" stroke="#008380" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Right rotation arrows -->
+  <path d="M21 12l1.5 1.5M21 12l-1.5 1.5M21 12h-4" stroke="#008380" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
